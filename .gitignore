@@ -1,9 +1,12 @@
-.DS_Store
-node_modules
+# Dependency directories
+node_modules/
+jspm_packages/
+
+# Build output
 /dist
+/dist-ssr
 
-
-# local env files
+# Local env files
 .env.local
 .env.*.local
 
@@ -21,3 +24,32 @@ pnpm-debug.log*
 *.njsproj
 *.sln
 *.sw?
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Optional npm cache directory
+.npm
+
+# Optional eslint cache
+.eslintcache
+
+# Optional stylelint cache
+.stylelintcache
+
+# Test coverage directory
+/coverage
+
+# Cypress
+/cypress/videos/
+/cypress/screenshots/
+
+# PWA generated files
+/public/precache-manifest.*.js
+/public/service-worker.js
