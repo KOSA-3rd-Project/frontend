@@ -4,23 +4,23 @@
 <template>
     <div class="home">
         <h3>여기는 홈페이지</h3>
-        <promotion-item></promotion-item>
-        <new-items></new-items>
-        <hot-items></hot-items>
+        <auction-of-the-month></auction-of-the-month>
+        <new-auctions></new-auctions>
+        <hot-auctions></hot-auctions>
     </div>
 </template>
 
 <script>
-import PromotionItem from '@/components/home/PromotionItem.vue';
-import NewItems from '@/components/home/NewItems.vue';
-import HotItems from '@/components/home/HotItems.vue';
+import AuctionOfTheMonth from '@/components/home/AuctionOfTheMonth.vue';
+import NewAuctions from '@/components/home/NewAuctions.vue';
+import HotAuctions from '@/components/home/HotAuctions.vue';
 
 export default {
     name: 'Home',
     components: {
-        PromotionItem,
-        NewItems,
-        HotItems,
+        AuctionOfTheMonth,
+        NewAuctions,
+        HotAuctions,
     },
 };
 </script>
