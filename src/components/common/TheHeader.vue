@@ -1,3 +1,6 @@
+<!-- 헤더 -->
+<!-- 작성자: 이주윤 -->
+
 <template>
     <v-app-bar :elevation="3">
         <v-container class="pa-0 fill-height">
@@ -26,6 +29,7 @@
                         </v-btn>
                         <v-btn class="ml-2" rounded="xl" dark>Login</v-btn>
                         <v-btn class="ml-2" rounded="xl" dark>Sign Up</v-btn>
+                        <v-btn class="ml-2" rounded="xl" dark>Logout</v-btn>
                     </v-row>
                 </v-col>
             </v-row>

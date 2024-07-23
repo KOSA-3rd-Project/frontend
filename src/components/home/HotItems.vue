@@ -1,5 +1,7 @@
 <template>
-    <div></div>
+    <div>
+        <h3>HotItems</h3>
+    </div>
 </template>
 
 <script>

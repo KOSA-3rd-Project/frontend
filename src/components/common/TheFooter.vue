@@ -1,3 +1,6 @@
+<!-- 푸터 -->
+<!-- 작성자: 이주윤 -->
+
 <template>
     <v-footer app dark padless>
         <v-container class="py-0">
