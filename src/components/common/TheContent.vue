@@ -1,10 +1,10 @@
-<!-- 모든 페이지의 기본 레이아웃 -->
+<!-- 모든 페이지의 내용을 담는 레이아웃 -->
 <!-- 작성자: 이주윤 -->
 
 <template>
-    <v-main>
+    <div class="content-wrapper">
         <router-view></router-view>
-    </v-main>
+    </div>
 </template>
 
 <script>
