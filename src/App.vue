@@ -21,7 +21,6 @@ export default {
         TheContent,
         TheFooter,
     },
-
     data: () => ({
         //
     }),
