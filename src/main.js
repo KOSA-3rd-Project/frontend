@@ -6,6 +6,7 @@ import axios from 'axios';
 // import store from './store/index';
 
 import vuetify from './plugins/vuetify';
+import 'vuetify/dist/vuetify.min.css';
 
 Vue.prototype.$axios = axios; // axios를 전역으로 설정
 Vue.config.productionTip = false;
