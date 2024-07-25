@@ -1,5 +1,6 @@
 import HomePage from '@/views/HomePage.vue';
 import ChatPage from '@/views/ChatPage.vue';
+import PaymentPage from '@/views/PaymentPage.vue';
 
 export default [
     {
@@ -11,5 +12,10 @@ export default [
         path: '/chat',
         name: 'ChatPage',
         component: ChatPage,
+    },
+    {
+        path: '/payment',
+        name: 'PaymentPage',
+        component: PaymentPage,
     },
 ];
