@@ -91,12 +91,11 @@ export default {
 
   th, td {
       border: 1px solid #999999;   /* 삭제 예정 */
-      padding: 0 50px;
+      padding: 10px 50px;
   }
 
   .imgcell {
     width: 190px;
-    height: 190px;
     justify-content: center;
     align-items: center;
   }
@@ -108,8 +107,9 @@ export default {
 
   .actionbutton {
       width: 400px;
-      justify-content: center;
-      align-items: center;
   }
 
+  .actioncell {
+    text-align: center;
+  }
 </style>
