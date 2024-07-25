@@ -1,9 +1,9 @@
 <template>
     <v-app id="app">
         <the-header />
-        <the-content>
-            <router-view></router-view>
-        </the-content>
+        <v-main>
+            <the-content />
+        </v-main>
         <the-footer />
     </v-app>
 </template>
@@ -11,7 +11,7 @@
 <script>
 import TheHeader from '@/components/common/TheHeader.vue';
 import TheFooter from '@/components/common/TheFooter.vue';
-import TheContent from '@/components/common/TheContents.vue';
+import TheContent from '@/components/common/TheContent.vue';
 
 export default {
     name: 'App',
@@ -26,3 +26,7 @@ export default {
     }),
 };
 </script>
+
+<style >
+    @import '~@/assets/style.css';
+</style>

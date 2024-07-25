@@ -11,10 +11,12 @@
     "axios": "^1.7.2",
     "core-js": "^3.8.3",
     "cors": "^2.8.5",
+    "sockjs-client": "^1.6.1",
     "vue": "^2.6.14",
     "vue-router": "^3.6.5",
     "vuetify": "^2.6.0",
-    "vuex": "^3.6.2"
+    "vuex": "^3.6.2",
+    "webstomp-client": "^1.2.6"
   },
   "devDependencies": {
     "@babel/core": "^7.24.9",
