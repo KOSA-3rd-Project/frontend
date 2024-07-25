@@ -2,15 +2,12 @@
 
 /* 요소간 간격 */
 div {
-    padding: 10px;
+    padding: 15px;
 }
 
-/* 액션버튼 */
-.actionbutton {
-    border-radius: 25px;
-    background-color: black !important;
-    color: white !important;
-    box-shadow: none !important;
+/* 구분선 */
+.line {
+    margin: 25px 0 25px 0;
 }
 
 /* 바디 컨테이너 */
@@ -21,6 +18,24 @@ div {
     margin: 0 auto;
     padding: 20px;
     font-size: 1rem;
+}
+
+/* 정렬 */
+.aligncenter {
+    text-align: center;
+}
+
+.alignright {
+    text-align: right;
+}
+
+/* 액션버튼 */
+.actionbutton {
+    border-radius: 25px;
+    background-color: black !important;
+    color: white !important;
+    box-shadow: none !important;
+    padding: 10px;
 }
 
 /* 대제목 - h1 사이즈와 두께 */

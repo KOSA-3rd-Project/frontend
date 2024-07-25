@@ -1,7 +1,7 @@
 import HomePage from '@/views/HomePage.vue';
 import ChatPage from '@/views/ChatPage.vue';
-import ProductPaymentPage from '@/views/ProductPaymentPage.vue';
-import ProductDetailPage from '@/views/ProductDetailPage.vue';
+import PaymentPage from '@/views/PaymentPage.vue';
+import DetailPage from '@/views/DetailPage.vue';
 
 export default [
     {
@@ -15,13 +15,13 @@ export default [
         component: ChatPage,
     },
     {
-        path: '/product/detail',
-        name: 'ProductDetailPage',
-        component: ProductDetailPage,
+        path: '/auction/detail',
+        name: 'DetailPage',
+        component: DetailPage,
     },
     {
-        path: '/product/payment',
-        name: 'ProductPaymentPage',
-        component: ProductPaymentPage,
+        path: '/auction/payment',
+        name: 'PaymentPage',
+        component: PaymentPage,
     },
 ];
