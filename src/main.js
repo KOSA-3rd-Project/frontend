@@ -9,6 +9,7 @@ import './assets/style.css';
 
 // import store from './store/index';
 
+
 Vue.prototype.$axios = axios; // axios를 전역으로 설정
 Vue.config.productionTip = false;
 
