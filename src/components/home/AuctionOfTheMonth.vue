@@ -2,26 +2,26 @@
 <!-- 작성자: 이주윤 -->
 
 <template>
-    <v-card v-if="monthlyAuction.auctionId" class="mt-6 mx-auto" max-width="1000">
+    <v-card v-if="monthlyAuction.auctionId" class="mt-4 mx-auto" max-width="1000">
         <v-row no-gutters>
             <v-col cols="12" md="6">
-                <v-card-title class="text-h5 font-weight-bold"> Deals of the Month </v-card-title>
+                <v-card-title class="text-h5 font-weight-bold"> 이 달의 경매 </v-card-title>
                 <v-card-title>
                     {{ monthlyAuction.itemName }}
                 </v-card-title>
                 <v-list-item>
                     <v-list-item-content>
                         <v-list-item-title>시작 가격</v-list-item-title>
-                        <v-list-item-subtitle>{{ formatPrice(monthlyAuction.startPrice) }}원</v-list-item-subtitle>
+                        <v-list-item-subtitle style="font-weight: bold; color: black">{{ formatPrice(monthlyAuction.startPrice) }} 원</v-list-item-subtitle>
                     </v-list-item-content>
                 </v-list-item>
                 <v-list-item>
                     <v-list-item-content>
-                        <v-list-item-title>현재 가격</v-list-item-title>
-                        <v-list-item-subtitle>{{ formatPrice(monthlyAuction.highestBid) }}원</v-list-item-subtitle>
+                        <v-list-item-title>입찰 가격</v-list-item-title>
+                        <v-list-item-subtitle style="font-weight: bold; color: black">{{ formatPrice(monthlyAuction.highestBid) }} 원</v-list-item-subtitle>
                     </v-list-item-content>
                 </v-list-item>
-                <v-row justify="center" class="my-4">
+                <v-row class="my-4 ml-1">
                     <v-col v-for="(time, index) in remainingTime" :key="index" cols="auto">
                         <v-card outlined class="text-center pa-2" min-width="70">
                             <div class="text-h5">{{ time.value }}</div>
@@ -30,7 +30,7 @@
                     </v-col>
                 </v-row>
                 <v-card-actions>
-                    <v-btn block color="black" dark @click="viewProduct"> 제품 보러가기 → </v-btn>
+                    <v-btn class="ml-2" color="black" rounded dark @click="viewProduct" style="width: 50%"> 제품 보러가기 → </v-btn>
                 </v-card-actions>
             </v-col>
             <v-col cols="12" md="6" class="d-flex align-center justify-center">
@@ -116,9 +116,4 @@ export default {
 };
 </script>
 
-<style scoped>
-.v-image {
-    width: 100%;
-    height: 100%;
-}
-</style>
+<style scoped></style>

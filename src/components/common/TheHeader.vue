@@ -2,7 +2,7 @@
 <!-- 작성자: 이주윤 -->
 
 <template>
-    <v-app-bar class="pl-10 pr-10" app flat>
+    <v-app-bar class="pl-10 pr-10" flat>
         <v-img src="@/assets/team-logo.png" max-height="60" max-width="200" contain class="mr-10"></v-img>
 
         <v-btn text>
