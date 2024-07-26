@@ -66,13 +66,25 @@ export default {
                     const response = await this.$axios.get(`/search?q=${this.searchQuery}`);
 
                     // 검색 결과를 Vuex store에 저장
-                    this.$store.commit('search/setSearchResults', response.data.auctions);
+                    this.$store.commit('search/setSearchResults', response.data);
 
-                    // 검색 결과 페이지로 이동
-                    this.$router.push({
-                        path: '/search',
-                        query: { q: this.searchQuery },
-                    });
+                    // 현재 경로가 '/search'인 경우 $router.push 대신 $router.replace 사용
+                    if (this.$route.path === '/search') {
+                        await this.$router.replace({
+                            path: '/search',
+                            query: { q: this.searchQuery },
+                        });
+                    } else {
+                        await this.$router.push({
+                            path: '/search',
+                            query: { q: this.searchQuery },
+                        });
+                    }
+
+                    // SearchResults 컴포넌트의 검색 메서드 호출
+                    if (this.$root.$refs.searchResults) {
+                        this.$root.$refs.searchResults.performSearch();
+                    }
                 } catch (error) {
                     console.error('검색 중 오류 발생: ', error);
                 }
