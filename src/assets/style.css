@@ -1,10 +1,5 @@
 /* @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@100;400;700&display=swap'); */
 
-/* 요소간 간격 */
-div {
-    padding: 15px;
-}
-
 /* 구분선 */
 .line {
     margin: 25px 0 25px 0;
@@ -42,6 +37,7 @@ div {
 .maintitle {
     font-size: 32px;
     font-weight: bold;
+    padding: 30px 0 40px 0;
 }
 
 /* 중간제목 - h2 사이즈와 두께 */
@@ -86,4 +82,9 @@ div {
     font-size: 10px;
     border-radius: 5px;
     padding: 5px;
+}
+
+/* 색상 */
+.redcolor {
+    color: red;
 }

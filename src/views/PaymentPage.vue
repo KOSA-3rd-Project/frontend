@@ -27,7 +27,7 @@
       <div class="middletitle">배송정보</div>
       <form @submit.prevent="submitForm">
         <table>
-          <tr>
+          <tr class="leftwidth">
             <td><label for="name">이름</label></td>
             <td><input type="text" id="name" v-model="form.name" class="form-control inputform" placeholder="이름을 입력해주세요" required></td>
           </tr>
@@ -53,7 +53,7 @@
 
         <div class="middletitle">결제정보</div>
         <table>
-          <tr>
+          <tr class="leftwidth">
             <td>상품</td>
             <td class="alignright">{{ totalprice }}원</td>
           </tr>
@@ -159,6 +159,10 @@ table {
 tr, td {
   padding: 10px 20px;
   border: none !important;
+}
+
+.leftwidth {
+  width: 250px;
 }
 
 .inputform {
