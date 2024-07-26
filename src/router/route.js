@@ -6,6 +6,7 @@ import DetailPage from '@/views/DetailPage.vue';
 import AuctionForm from '@/views/AuctionForm.vue';
 import SignInPage from '@/views/SignInPage.vue';
 import SignUpPage from '@/views/SignUpPage.vue';
+import SearchResults from '@/views/SearchResults.vue';
 
 export default [
     {
@@ -51,5 +52,10 @@ export default [
         path: '/signup',
         name: 'SignUpPage',
         component: SignUpPage,
+    },
+    {
+        path: '/search',
+        name: 'SearchResults',
+        component: SearchResults,
     },
 ];
