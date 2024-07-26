@@ -55,9 +55,11 @@ export default {
     methods: {
         getNewAuctions() {
             this.$axios
-                .get('/api/auctions/new')
+                .get('/auctions/new')
                 .then((res) => {
-                    this.newAuctions = res.data;
+                    this.newAuctions = res.data.auctions;
+
+                    console.log('서버 메시지: ', res.data.message);
                 })
                 .catch((err) => {
                     console.err('getNewAuctions() 실행 중 에러 발생: ', err);

@@ -63,9 +63,10 @@ export default {
     methods: {
         getMonthlyAuction() {
             this.$axios
-                .get('/api/auctions/month')
+                .get('/auctions/month')
                 .then((res) => {
-                    this.monthlyAuction = res.data;
+                    this.monthlyAuction = res.data.auction;
+                    console.log('서버 메시지: ', res.data.message);
                     this.startTimer();
                 })
                 .catch((err) => {
