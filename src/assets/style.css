@@ -24,6 +24,12 @@
     text-align: right;
 }
 
+.spacebetween {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
 /* 액션버튼 */
 .actionbutton {
     border-radius: 25px;
@@ -55,6 +61,11 @@
 /* 제목 - h5 사이즈와 두께 */
 .tinytitle {
     font-size: 14px;
+}
+
+/* 두께 원상태 */
+.unbold {
+    font-weight: normal;
 }
 
 /* 진행전 버튼 */
