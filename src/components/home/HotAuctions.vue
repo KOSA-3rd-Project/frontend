@@ -55,9 +55,11 @@ export default {
     methods: {
         getHotAuctions() {
             this.$axios
-                .get('/api/auctions/popular')
+                .get('/auctions/popular')
                 .then((res) => {
-                    this.hotAuctions = res.data;
+                    this.hotAuctions = res.data.auctions;
+
+                    console.log('서버 메시지: ', res.data.message);
                 })
                 .catch((err) => {
                     console.err('getHotAuctions() 실행 중 에러 발생: ', err);
