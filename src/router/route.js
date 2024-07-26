@@ -1,5 +1,5 @@
 import HomePage from '@/views/HomePage.vue';
-import Chat from '@/views/Chat.vue';
+import ChatPage from '@/views/ChatPage.vue';
 import ChatRoom from '@/components/chat/ChatRoom.vue';
 import PaymentPage from '@/views/PaymentPage.vue';
 import DetailPage from '@/views/DetailPage.vue';
@@ -29,7 +29,7 @@ export default [
     {
         path: '/chat',
         name: 'Chat',
-        component: Chat,
+        component: ChatPage,
         props: true,
         children: [
             {
