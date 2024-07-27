@@ -2,7 +2,8 @@ import HomePage from '@/views/HomePage.vue';
 import ChatPage from '@/views/ChatPage.vue';
 import PaymentPage from '@/views/PaymentPage.vue';
 import DetailPage from '@/views/DetailPage.vue';
-import AuctionForm from '@/views/AuctionForm.vue';
+import RegisterAuctionPage from '@/views/RegisterAuctionPage.vue';
+import ModifyAuctionPage from '@/views/ModifyAuctionPage.vue';
 
 export default [
     {
@@ -26,8 +27,13 @@ export default [
         component: PaymentPage,
     },
     {
-        path: '/auctions',
-        name: 'Auction',
-        component: AuctionForm,
+        path: '/auction',
+        name: 'RegisterAuctionPage',
+        component: RegisterAuctionPage,
     },
+    {
+        path: '/auction/:id/modify',
+        name: 'ModifyAuctionPage',
+        component: ModifyAuctionPage,
+    }
 ];
