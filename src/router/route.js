@@ -28,9 +28,10 @@ export default [
         component: AuctionForm,
     },
     {
-        path: '/chat',
-        name: 'Chat',
+        path: '/chat/:roomId',
+        name: 'ChatPage',
         component: ChatPage,
+        props: true
     },
     {
         path: '/signin',
