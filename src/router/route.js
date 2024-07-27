@@ -4,17 +4,14 @@ import PaymentPage from '@/views/PaymentPage.vue';
 import DetailPage from '@/views/DetailPage.vue';
 import RegisterAuctionPage from '@/views/RegisterAuctionPage.vue';
 import ModifyAuctionPage from '@/views/ModifyAuctionPage.vue';
+import SignInPage from '@/views/SignInPage.vue';
+import SignUpPage from '@/views/SignUpPage.vue';
 
 export default [
     {
         path: '/',
         name: 'HomePage',
         component: HomePage,
-    },
-    {
-        path: '/chat',
-        name: 'ChatPage',
-        component: ChatPage,
     },
     {
         path: '/auction/detail',
@@ -35,5 +32,22 @@ export default [
         path: '/auction/:id/modify',
         name: 'ModifyAuctionPage',
         component: ModifyAuctionPage,
-    }
+    },
+    {
+
+        path: '/chat/:roomId',
+        name: 'ChatPage',
+        component: ChatPage,
+        props: true
+    },
+    {
+        path: '/signin',
+        name: 'SignInPage',
+        component: SignInPage,
+    },
+    {
+        path: '/signup',
+        name: 'SignUpPage',
+        component: SignUpPage,
+    },
 ];

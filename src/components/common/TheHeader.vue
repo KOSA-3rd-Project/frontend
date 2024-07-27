@@ -38,18 +38,23 @@
             <v-icon>mdi-account-circle-outline</v-icon>
         </v-btn>
 
-        <v-btn class="ml-4" dark rounded> Login </v-btn>
-        <v-btn class="ml-4" dark rounded> Logout </v-btn>
-        <v-btn class="ml-4" dark rounded> Sign in </v-btn>
+        <v-btn class="ml-4" to="/signin" v-if="!member_info.login_check" dark rounded> Login </v-btn>
+        <v-btn class="ml-4" v-if="member_info.login_check" dark rounded> Logout </v-btn>
+        <v-btn class="ml-4" to="/signup" v-if="!member_info.login_check" dark rounded> Sign in </v-btn>
     </v-app-bar>
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
+
 export default {
     data() {
         return {
             searchQuery: '',
         };
+    },
+    computed: {
+        ...mapGetters({ member_info: 'member/getMemberInfo' }),
     },
     methods: {
         search() {
