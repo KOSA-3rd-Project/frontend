@@ -1,6 +1,5 @@
 import HomePage from '@/views/HomePage.vue';
 import ChatPage from '@/views/ChatPage.vue';
-import ChatRoom from '@/components/chat/ChatRoom.vue';
 import PaymentPage from '@/views/PaymentPage.vue';
 import DetailPage from '@/views/DetailPage.vue';
 import AuctionForm from '@/views/AuctionForm.vue';
@@ -32,15 +31,6 @@ export default [
         path: '/chat',
         name: 'Chat',
         component: ChatPage,
-        props: true,
-        children: [
-            {
-                path: ':chatRoomId',
-                name: 'ChatRoom',
-                component: ChatRoom,
-                props: true,
-            },
-        ],
     },
     {
         path: '/signin',
