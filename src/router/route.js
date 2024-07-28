@@ -1,9 +1,9 @@
 import HomePage from '@/views/HomePage.vue';
 import ChatPage from '@/views/ChatPage.vue';
-import ChatRoom from '@/components/chat/ChatRoom.vue';
 import PaymentPage from '@/views/PaymentPage.vue';
 import DetailPage from '@/views/DetailPage.vue';
-import AuctionForm from '@/views/AuctionForm.vue';
+import RegisterAuctionPage from '@/views/RegisterAuctionPage.vue';
+import ModifyAuctionPage from '@/views/ModifyAuctionPage.vue';
 import SignInPage from '@/views/SignInPage.vue';
 import SignUpPage from '@/views/SignUpPage.vue';
 import SearchResults from '@/views/SearchResults.vue';
@@ -25,23 +25,21 @@ export default [
         component: PaymentPage,
     },
     {
-        path: '/auctions',
-        name: 'Auction',
-        component: AuctionForm,
+        path: '/auction',
+        name: 'RegisterAuctionPage',
+        component: RegisterAuctionPage,
     },
     {
-        path: '/chat',
-        name: 'Chat',
+        path: '/auction/:id/modify',
+        name: 'ModifyAuctionPage',
+        component: ModifyAuctionPage,
+    },
+    {
+
+        path: '/chat/:roomId',
+        name: 'ChatPage',
         component: ChatPage,
-        props: true,
-        children: [
-            {
-                path: ':chatRoomId',
-                name: 'ChatRoom',
-                component: ChatRoom,
-                props: true,
-            },
-        ],
+        props: true
     },
     {
         path: '/signin',
