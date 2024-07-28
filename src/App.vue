@@ -1,7 +1,7 @@
 <template>
     <v-app id="app">
         <the-header />
-        <v-main>
+        <v-main class="mt-16">
             <the-content />
         </v-main>
         <the-footer />
@@ -27,6 +27,6 @@ export default {
 };
 </script>
 
-<style >
-    @import '~@/assets/style.css';
+<style>
+@import '~@/assets/style.css';
 </style>
