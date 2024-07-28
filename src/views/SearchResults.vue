@@ -1,3 +1,5 @@
+<!-- SearchResults.vue -->
+
 <template>
     <v-container fluid>
         <v-row>
@@ -107,9 +109,10 @@ export default {
     },
     methods: {
         changePage(page) {
-            this.performSearch(page);
+            this.$router.push({ query: { ...this.$route.query, page } });
         },
-        performSearch(page = 1) {
+        performSearch() {
+            const page = parseInt(this.$route.query.page) || 1;
             this.$store.dispatch('search/searchAuctions', {
                 query: this.$route.query.q,
                 page: page,
@@ -121,13 +124,11 @@ export default {
         },
     },
     watch: {
-        '$route.query.q': {
+        '$route.query': {
             immediate: true,
-            handler(newQuery) {
-                if (newQuery) {
-                    this.currentPage = 1;
-                    this.performSearch();
-                }
+            handler() {
+                this.currentPage = parseInt(this.$route.query.page) || 1;
+                this.performSearch();
             },
         },
         selectedCategory() {
