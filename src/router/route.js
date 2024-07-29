@@ -5,7 +5,6 @@ import SearchResults from '@/views/SearchResults.vue';
 
 import RegisterAuctionPage from '@/views/RegisterAuctionPage.vue';
 import ModifyAuctionPage from '@/views/ModifyAuctionPage.vue';
-import DetailPage from '@/views/DetailPage.vue';
 import PaymentPage from '@/views/PaymentPage.vue';
 import PaymentStatusPage from '@/views/PaymentStatusPage.vue';
 import AuctionDetailPage from '@/views/AuctionDetailPage.vue';
@@ -23,6 +22,7 @@ export default [
         name: 'AuctionDetailPage',
         component: AuctionDetailPage,
     },
+    {
         path: '/auction',
         name: 'RegisterAuctionPage',
         component: RegisterAuctionPage,
