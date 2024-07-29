@@ -4,17 +4,34 @@ const SearchStore = {
     namespaced: true,
     state: {
         searchResults: {},
+        searchParams: {
+            q: '',
+            page: 1,
+            category: null,
+            condition: null,
+            minPrice: null,
+            maxPrice: null,
+            sort: '최신순',
+        },
     },
     mutations: {
         setSearchResults(state, results) {
             state.searchResults = results;
         },
+        setSearchParams(state, params) {
+            state.searchParams = { ...state.searchParams, ...params };
+        },
     },
     actions: {
-        async searchAuctions({ commit }, { query, page }) {
+        setSearchParams({ commit, dispatch }, params) {
+            commit('setSearchParams', params);
+            return dispatch('searchAuctions');
+        },
+
+        async searchAuctions({ commit, state }) {
             try {
                 const response = await axios.get(`/search`, {
-                    params: { q: query, page: page },
+                    params: state.searchParams,
                 });
                 commit('setSearchResults', response.data);
             } catch (error) {
@@ -25,6 +42,7 @@ const SearchStore = {
     },
     getters: {
         getSearchResults: (state) => state.searchResults,
+        getSearchParams: (state) => state.searchParams,
     },
 };
 

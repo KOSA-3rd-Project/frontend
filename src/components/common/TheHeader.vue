@@ -7,10 +7,17 @@
             <v-img src="@/assets/team-logo.png" max-height="60" max-width="200" contain class="mr-10"></v-img>
         </router-link>
 
-        <v-btn text>
-            Category
-            <v-icon>mdi-chevron-down</v-icon>
-        </v-btn>
+        <v-select
+            :items="categoryOptions"
+            label="Category"
+            dense
+            hide-details
+            solo
+            flat
+            background-color="rgba(245,245,245,1)"
+            style="max-width: 150px"
+            @change="onCategorySelect"
+        ></v-select>
 
         <v-spacer></v-spacer>
 
@@ -53,6 +60,12 @@ export default {
     data() {
         return {
             searchQuery: '',
+            categoryOptions: [
+                { text: '패션', value: '패션' },
+                { text: '가전', value: '가전' },
+                { text: '스포츠', value: '스포츠' },
+                { text: '수집품', value: '수집품' },
+            ],
         };
     },
     computed: {
@@ -60,34 +73,66 @@ export default {
     },
     methods: {
         async search() {
-            if (this.searchQuery.trim()) {
-                try {
-                    // Spring 백엔드로 검색 요청
-                    const response = await this.$axios.get(`/search?q=${this.searchQuery}`);
+            try {
+                // Spring 백엔드로 검색 요청
+                const response = await this.$axios.get(`/search?`, {
+                    params: {
+                        q: this.searchQuery.trim(),
+                    },
+                });
 
-                    // 검색 결과를 Vuex store에 저장
-                    this.$store.commit('search/setSearchResults', response.data);
+                // 검색 결과를 Vuex store에 저장
+                this.$store.commit('search/setSearchResults', response.data);
 
-                    // 현재 경로가 '/search'인 경우 $router.push 대신 $router.replace 사용
-                    if (this.$route.path === '/search') {
-                        await this.$router.replace({
-                            path: '/search',
-                            query: { q: this.searchQuery },
-                        });
-                    } else {
-                        await this.$router.push({
-                            path: '/search',
-                            query: { q: this.searchQuery },
-                        });
-                    }
+                // 현재 경로가 '/search'인 경우 $router.push 대신 $router.replace 사용
+                const routeOptions = {
+                    path: '/search',
+                    query: { q: this.searchQuery.trim() },
+                };
 
-                    // SearchResults 컴포넌트의 검색 메서드 호출
-                    if (this.$root.$refs.searchResults) {
-                        this.$root.$refs.searchResults.performSearch();
-                    }
-                } catch (error) {
-                    console.error('검색 중 오류 발생: ', error);
+                if (this.$route.path === '/search') {
+                    await this.$router.replace(routeOptions);
+                } else {
+                    await this.$router.push(routeOptions);
                 }
+
+                // SearchResults 컴포넌트의 검색 메서드 호출
+                if (this.$root.$refs.searchResults) {
+                    this.$root.$refs.searchResults.performSearch();
+                }
+            } catch (error) {
+                console.error('검색 중 오류 발생: ', error);
+            }
+        },
+
+        async onCategorySelect(category) {
+            try {
+                // URL 인코딩된 카테고리 값 생성
+                const encodedCategory = encodeURIComponent(category);
+
+                // Spring 백엔드로 카테고리 검색 요청
+                const response = await this.$axios.get(`/search`, {
+                    params: {
+                        q: '',
+                        category: encodedCategory,
+                    },
+                });
+
+                // 검색 결과를 Vuex store에 저장
+                this.$store.commit('search/setSearchResults', response.data);
+
+                // 검색 결과 페이지로 라우팅
+                await this.$router.push({
+                    path: '/search',
+                    query: { category: category },
+                });
+
+                // SearchResults 컴포넌트의 검색 메서드 호출
+                if (this.$root.$refs.searchResults) {
+                    this.$root.$refs.searchResults.performSearch();
+                }
+            } catch (error) {
+                console.error('카테고리 검색 중 오류 발생: ', error);
             }
         },
     },

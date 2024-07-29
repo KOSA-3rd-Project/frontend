@@ -13,10 +13,10 @@
                                 <v-expansion-panel-header>카테고리</v-expansion-panel-header>
                                 <v-expansion-panel-content>
                                     <v-radio-group v-model="selectedCategory">
-                                        <v-radio label="패션" value="fashion"></v-radio>
-                                        <v-radio label="가전" value="appliances"></v-radio>
-                                        <v-radio label="스포츠" value="sports"></v-radio>
-                                        <v-radio label="수집품" value="collectibles"></v-radio>
+                                        <v-radio label="패션" value="패션"></v-radio>
+                                        <v-radio label="가전" value="가전"></v-radio>
+                                        <v-radio label="스포츠" value="스포츠"></v-radio>
+                                        <v-radio label="수집품" value="수집품"></v-radio>
                                     </v-radio-group>
                                 </v-expansion-panel-content>
                             </v-expansion-panel>
@@ -24,9 +24,9 @@
                                 <v-expansion-panel-header>상태</v-expansion-panel-header>
                                 <v-expansion-panel-content>
                                     <v-radio-group v-model="selectedCondition">
-                                        <v-radio label="미개봉" value="new"></v-radio>
-                                        <v-radio label="새상품" value="like_new"></v-radio>
-                                        <v-radio label="중고 상품" value="used"></v-radio>
+                                        <v-radio label="미개봉" value="미개봉"></v-radio>
+                                        <v-radio label="새상품" value="새상품"></v-radio>
+                                        <v-radio label="중고 상품" value="중고"></v-radio>
                                     </v-radio-group>
                                 </v-expansion-panel-content>
                             </v-expansion-panel>
@@ -57,7 +57,8 @@
                     </v-col>
                     <v-col cols="6" class="text-right">
                         <v-select
-                            :items="['최신순', '인기순', '낮은가격순', '높은가격순']"
+                            v-model="selectedSort"
+                            :items="sortOptions"
                             label="정렬"
                             dense
                             outlined
@@ -91,7 +92,7 @@
 </template>
 
 <script>
-import { mapState } from 'vuex';
+import { mapState, mapActions } from 'vuex';
 
 export default {
     name: 'SearchResults',
@@ -102,46 +103,61 @@ export default {
             selectedCondition: null,
             minPrice: '',
             maxPrice: '',
+            selectedSort: '최신순',
+            sortOptions: [
+                { text: '최신순', value: 'latest' },
+                { text: '인기순', value: 'popular' },
+                { text: '낮은가격순', value: 'lowPrice' },
+                { text: '높은가격순', value: 'highPrice' },
+            ],
         };
     },
     computed: {
-        ...mapState('search', ['searchResults']),
+        ...mapState('search', ['searchResults', 'searchParams']),
     },
     methods: {
+        ...mapActions('search', ['searchAuctions', 'setSearchParams']),
+
         changePage(page) {
+            this.setSearchParams({ ...this.setSearchParams, page });
             this.$router.push({ query: { ...this.$route.query, page } });
         },
-        performSearch() {
-            const page = parseInt(this.$route.query.page) || 1;
-            this.$store.dispatch('search/searchAuctions', {
-                query: this.$route.query.q,
-                page: page,
-                category: this.selectedCategory,
-                condition: this.selectedCondition,
-                minPrice: this.minPrice,
-                maxPrice: this.maxPrice,
-            });
+        async performSearch() {
+            await this.searchAuctions(this.searchParams);
         },
     },
     watch: {
-        '$route.query': {
-            immediate: true,
+        searchParams: {
             handler() {
-                this.currentPage = parseInt(this.$route.query.page) || 1;
                 this.performSearch();
             },
+            deep: true,
         },
-        selectedCategory() {
-            this.performSearch();
+
+        '$route.query': {
+            handler(newQuery) {
+                //라우트 쿼리가 변경될 때만 검색 파라미터 업데이트
+                if (JSON.stringify(this.searchParams) !== JSON.stringify(newQuery)) {
+                    this.setSearchParams(newQuery);
+                }
+            },
+            deep: true,
+            immediate: true,
         },
-        selectedCondition() {
-            this.performSearch();
+        selectedCategory(newCategory) {
+            this.setSearchParams({ ...this.searchParams, category: newCategory, page: 1 });
         },
-        minPrice() {
-            this.performSearch();
+        selectedCondition(newCondition) {
+            this.setSearchParams({ ...this.searchParams, condition: newCondition, page: 1 });
         },
-        maxPrice() {
-            this.performSearch();
+        minPrice(newMinPrice) {
+            this.setSearchParams({ ...this.searchParams, minPrice: newMinPrice, page: 1 });
+        },
+        maxPrice(newMaxPrice) {
+            this.setSearchParams({ ...this.searchParams, maxPrice: newMaxPrice, page: 1 });
+        },
+        selectedSort(newSort) {
+            this.setSearchParams({ ...this.searchParams, sort: newSort, page: 1 });
         },
     },
     mounted() {
