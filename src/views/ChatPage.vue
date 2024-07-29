@@ -48,6 +48,7 @@ export default {
       message: "",
       stompClient: null,
       connected: false,
+      chatRoomId: this.$route.params.chatRoomId,
     };
   },
   computed: {
@@ -65,6 +66,7 @@ export default {
       if (this.message) {
         const now = new Date().toISOString();
         const msg = { 
+          chatRoomId: this.chatRoomId,
           memberId: this.memberId,
           message: this.message,
           createdAt: now
@@ -93,7 +95,7 @@ export default {
         () => {
           this.connected = true;
           console.log('Connected to WebSocket server.');
-          this.stompClient.subscribe("/send", res => {
+          this.stompClient.subscribe(`/topic/${this.chatRoomId}`, res => {
             console.log('STOMP message received:', res.body);
             try {
               const parsedMessage = JSON.parse(res.body);
@@ -164,6 +166,7 @@ export default {
   padding: 10px;
   overflow-y: auto;
   background-color: #fff;
+  height: 100%; /* Ensure it's taking up the full height */
 }
 
 .message {
