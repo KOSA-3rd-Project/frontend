@@ -1,12 +1,15 @@
 import HomePage from '@/views/HomePage.vue';
-import ChatPage from '@/views/ChatPage.vue';
-import PaymentPage from '@/views/PaymentPage.vue';
-import DetailPage from '@/views/DetailPage.vue';
-import RegisterAuctionPage from '@/views/RegisterAuctionPage.vue';
-import ModifyAuctionPage from '@/views/ModifyAuctionPage.vue';
 import SignInPage from '@/views/SignInPage.vue';
 import SignUpPage from '@/views/SignUpPage.vue';
 import SearchResults from '@/views/SearchResults.vue';
+
+import RegisterAuctionPage from '@/views/RegisterAuctionPage.vue';
+import ModifyAuctionPage from '@/views/ModifyAuctionPage.vue';
+import PaymentPage from '@/views/PaymentPage.vue';
+import PaymentStatusPage from '@/views/PaymentStatusPage.vue';
+import AuctionDetailPage from '@/views/AuctionDetailPage.vue';
+
+import ChatPage from '@/views/ChatPage.vue';
 
 export default [
     {
@@ -15,14 +18,9 @@ export default [
         component: HomePage,
     },
     {
-        path: '/auction/detail',
-        name: 'DetailPage',
-        component: DetailPage,
-    },
-    {
-        path: '/auction/payment',
-        name: 'PaymentPage',
-        component: PaymentPage,
+        path: '/auction/:id',
+        name: 'AuctionDetailPage',
+        component: AuctionDetailPage,
     },
     {
         path: '/auction',
@@ -33,6 +31,16 @@ export default [
         path: '/auction/:id/modify',
         name: 'ModifyAuctionPage',
         component: ModifyAuctionPage,
+    },
+    {
+        path: '/auction/payment',
+        name: 'PaymentPage',
+        component: PaymentPage,
+    },
+    {
+        path: '/auction/paymentstatus',
+        name: 'PaymentStatusPage',
+        component: PaymentStatusPage,
     },
     {
         path: '/chat/:chatRoomId',
