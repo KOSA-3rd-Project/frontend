@@ -28,21 +28,21 @@
         >
         </v-text-field>
 
-        <v-btn icon class="ml-4">
+        <v-btn icon class="ml-4" v-if="isLogIn">
             <v-icon>mdi-chat-outline</v-icon>
         </v-btn>
 
-        <v-btn icon class="ml-4">
+        <v-btn icon class="ml-4" v-if="isLogIn">
             <v-icon>mdi-heart-outline</v-icon>
         </v-btn>
 
-        <v-btn icon class="ml-4">
+        <v-btn icon class="ml-4" v-if="isLogIn">
             <v-icon>mdi-account-circle-outline</v-icon>
         </v-btn>
 
-        <v-btn class="ml-4" to="/signin" v-if="!member_info.login_check" dark rounded> Login </v-btn>
-        <v-btn class="ml-4" v-if="member_info.login_check" dark rounded> Logout </v-btn>
-        <v-btn class="ml-4" to="/signup" v-if="!member_info.login_check" dark rounded> Sign in </v-btn>
+        <v-btn class="ml-4" to="/signin" v-if="!isLogIn" dark rounded> Login </v-btn>
+        <v-btn class="ml-4" v-if="isLogIn" @click="logout" dark rounded> Logout </v-btn>
+        <v-btn class="ml-4" to="/signup" v-if="!isLogIn" dark rounded> Sign in </v-btn>
     </v-app-bar>
 </template>
 
@@ -56,8 +56,12 @@ export default {
         };
     },
     computed: {
-        ...mapGetters({ member_info: 'member/getMemberInfo' }),
+        ...mapGetters({ access_token: 'member/getAccessToken' }),
+        isLogIn() {
+            return !!this.access_token;
+        },
     },
+
     methods: {
         async search() {
             if (this.searchQuery.trim()) {
@@ -89,6 +93,9 @@ export default {
                     console.error('검색 중 오류 발생: ', error);
                 }
             }
+        },
+        logout() {
+            this.$store.dispatch('member/logout');
         },
     },
 };

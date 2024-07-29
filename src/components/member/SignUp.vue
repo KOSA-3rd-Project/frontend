@@ -42,7 +42,7 @@ export default {
                 })
                 .catch((error) => {
                     console.error(error);
-                    alert('저장 중 오류가 발생했습니다.');
+                    alert('오류가 발생했습니다.');
                 });
         },
     },
