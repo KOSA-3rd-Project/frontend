@@ -35,11 +35,9 @@ export default [
         component: ModifyAuctionPage,
     },
     {
-
-        path: '/chat/:roomId',
+        path: '/chat/:chatRoomId',
         name: 'ChatPage',
         component: ChatPage,
-        props: true
     },
     {
         path: '/signin',
