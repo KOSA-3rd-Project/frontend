@@ -1,7 +1,7 @@
 import HomePage from '@/views/HomePage.vue';
 import ChatPage from '@/views/ChatPage.vue';
 import PaymentPage from '@/views/PaymentPage.vue';
-import DetailPage from '@/views/DetailPage.vue';
+import AuctionDetailPage from '@/views/AuctionDetailPage.vue';
 import RegisterAuctionPage from '@/views/RegisterAuctionPage.vue';
 import ModifyAuctionPage from '@/views/ModifyAuctionPage.vue';
 import SignInPage from '@/views/SignInPage.vue';
@@ -15,9 +15,9 @@ export default [
         component: HomePage,
     },
     {
-        path: '/auction/detail',
-        name: 'DetailPage',
-        component: DetailPage,
+        path: '/auction/:id',
+        name: 'AuctionDetailPage',
+        component: AuctionDetailPage,
     },
     {
         path: '/auction/payment',
