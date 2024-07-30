@@ -1,25 +1,30 @@
 import axios from 'axios';
 
-const SearchStore = {
-    namespaced: true,
-    state: {
-        searchResults: {},
-        searchParams: {
-            q: '',
-            page: 1,
-            category: null,
-            condition: null,
-            minPrice: null,
-            maxPrice: null,
-            sort: '최신순',
-        },
+const initialState = {
+    searchResults: {},
+    searchParams: {
+        q: '',
+        page: 1,
+        category: null,
+        condition: null,
+        minPrice: null,
+        maxPrice: null,
+        sort: '최신순',
     },
+};
+
+export default {
+    namespaced: true,
+    state: { ...initialState },
     mutations: {
         setSearchResults(state, results) {
             state.searchResults = results;
         },
         setSearchParams(state, params) {
             state.searchParams = { ...state.searchParams, ...params };
+        },
+        resetState(state) {
+            Object.assign(state, initialState);
         },
     },
     actions: {
@@ -39,11 +44,13 @@ const SearchStore = {
                 // 오류 처리 로직
             }
         },
+
+        resetSearchState({ commit }) {
+            commit('resetState');
+        },
     },
     getters: {
         getSearchResults: (state) => state.searchResults,
         getSearchParams: (state) => state.searchParams,
     },
 };
-
-export default SearchStore;

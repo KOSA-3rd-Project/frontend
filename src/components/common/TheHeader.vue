@@ -8,6 +8,7 @@
         </router-link>
 
         <v-select
+            v-model="selectedCategory"
             :items="categoryOptions"
             label="Category"
             dense
@@ -17,6 +18,7 @@
             background-color="rgba(245,245,245,1)"
             style="max-width: 150px"
             @change="onCategorySelect"
+            @click:clear="clearCategory"
         ></v-select>
 
         <v-spacer></v-spacer>
@@ -54,12 +56,13 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
+import { mapGetters, mapActions } from 'vuex';
 
 export default {
     data() {
         return {
             searchQuery: '',
+            selectedCategory: '',
             categoryOptions: [
                 { text: '패션', value: '패션' },
                 { text: '가전', value: '가전' },
@@ -76,6 +79,8 @@ export default {
     },
 
     methods: {
+        ...mapActions('search', ['setSearchParams']),
+
         async search() {
             try {
                 // Spring 백엔드로 검색 요청
@@ -110,15 +115,14 @@ export default {
         },
 
         async onCategorySelect(category) {
-            try {
-                // URL 인코딩된 카테고리 값 생성
-                const encodedCategory = encodeURIComponent(category);
+            if (!category) return;
 
+            try {
                 // Spring 백엔드로 카테고리 검색 요청
                 const response = await this.$axios.get(`/search`, {
                     params: {
                         q: '',
-                        category: encodedCategory,
+                        category: category,
                     },
                 });
 
@@ -135,12 +139,26 @@ export default {
                 if (this.$root.$refs.searchResults) {
                     this.$root.$refs.searchResults.performSearch();
                 }
+
+                // 카테고리 선택 즉시 카테고리 초기화
+                this.selectedCategory = null;
             } catch (error) {
                 console.error('카테고리 검색 중 오류 발생: ', error);
             }
         },
+
+        clearCategory() {
+            this.selectedCategory = '';
+        },
+
         logout() {
             this.$store.dispatch('member/logout');
+        },
+    },
+
+    watch: {
+        $route() {
+            this.selectedCategory = '';
         },
     },
 };

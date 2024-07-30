@@ -125,8 +125,28 @@ export default {
         async performSearch() {
             await this.searchAuctions(this.searchParams);
         },
+
+        updateSearchParams() {
+            const newParams = {
+                q: this.$route.query.q || '',
+                page: parseInt(this.$route.query.page) || 1,
+                category: this.$route.query.category || null,
+                condition: this.$route.query.condition || null,
+                minPrice: this.$route.query.minPrice || null,
+                maxPrice: this.$route.query.maxPrice || null,
+                sort: this.$route.query.sort || '최신순',
+            };
+            this.setSearchParams(newParams);
+        },
     },
     watch: {
+        $route: {
+            handler() {
+                this.updateSearchParams(), this.performSearch();
+            },
+            immediate: true,
+        },
+
         searchParams: {
             handler() {
                 this.performSearch();
