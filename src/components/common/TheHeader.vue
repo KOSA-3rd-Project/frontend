@@ -18,7 +18,6 @@
             background-color="rgba(245,245,245,1)"
             style="max-width: 150px"
             @change="onCategorySelect"
-            @click:clear="clearCategory"
         ></v-select>
 
         <v-spacer></v-spacer>
@@ -62,7 +61,6 @@ export default {
     data() {
         return {
             searchQuery: '',
-            selectedCategory: '',
             categoryOptions: [
                 { text: '패션', value: '패션' },
                 { text: '가전', value: '가전' },
@@ -72,93 +70,44 @@ export default {
         };
     },
     computed: {
-        ...mapGetters({ access_token: 'member/getAccessToken' }),
+        ...mapGetters({
+            access_token: 'member/getAccessToken',
+            selectedCategory: 'search/getSelectedCategory',
+        }),
         isLogIn() {
             return !!this.access_token;
         },
     },
 
     methods: {
-        ...mapActions('search', ['setSearchParams']),
-
-        async search() {
-            try {
-                // Spring 백엔드로 검색 요청
-                const response = await this.$axios.get(`/search?`, {
-                    params: {
-                        q: this.searchQuery.trim(),
-                    },
-                });
-
-                // 검색 결과를 Vuex store에 저장
-                this.$store.commit('search/setSearchResults', response.data);
-
-                // 현재 경로가 '/search'인 경우 $router.push 대신 $router.replace 사용
-                const routeOptions = {
-                    path: '/search',
-                    query: { q: this.searchQuery.trim() },
-                };
-
-                if (this.$route.path === '/search') {
-                    await this.$router.replace(routeOptions);
-                } else {
-                    await this.$router.push(routeOptions);
-                }
-
-                // SearchResults 컴포넌트의 검색 메서드 호출
-                if (this.$root.$refs.searchResults) {
-                    this.$root.$refs.searchResults.performSearch();
-                }
-            } catch (error) {
-                console.error('검색 중 오류 발생: ', error);
-            }
-        },
+        ...mapActions({
+            setCategory: 'search/setCategory',
+            clearCategory: 'search/clearCategory',
+            newSearch: 'search/newSearch',
+        }),
 
         async onCategorySelect(category) {
             if (!category) return;
-
-            try {
-                // Spring 백엔드로 카테고리 검색 요청
-                const response = await this.$axios.get(`/search`, {
-                    params: {
-                        q: '',
-                        category: category,
-                    },
-                });
-
-                // 검색 결과를 Vuex store에 저장
-                this.$store.commit('search/setSearchResults', response.data);
-
-                // 검색 결과 페이지로 라우팅
-                await this.$router.push({
-                    path: '/search',
-                    query: { category: category },
-                });
-
-                // SearchResults 컴포넌트의 검색 메서드 호출
-                if (this.$root.$refs.searchResults) {
-                    this.$root.$refs.searchResults.performSearch();
-                }
-
-                // 카테고리 선택 즉시 카테고리 초기화
-                this.selectedCategory = null;
-            } catch (error) {
-                console.error('카테고리 검색 중 오류 발생: ', error);
-            }
+            await this.setCategory(category);
+            this.$router.push({ path: '/search', query: { category } });
         },
 
-        clearCategory() {
-            this.selectedCategory = '';
+        async search() {
+            await this.newSearch(this.searchQuery.trim());
+            this.$router.push({ path: '/search', query: { q: this.searchQuery.trim() } });
         },
 
         logout() {
             this.$store.dispatch('member/logout');
+            this.clearCategory();
         },
     },
 
     watch: {
-        $route() {
-            this.selectedCategory = '';
+        $route(to, from) {
+            if (to.path !== '/search' && from.path === '/search') {
+                this.clearCategory();
+            }
         },
     },
 };

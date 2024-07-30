@@ -17,9 +17,8 @@ const router = new VueRouter({
 // 전역 네비게이션 가드 추가
 router.beforeEach((to, from, next) => {
     // 라우트가 변경되는 경우
-    if (to.name !== from.name) {
-        // 검색 파라미터 초기화
-        store.dispatch('search/resetSearchState');
+    if (to.path != '/search' && from.path === '/search') {
+        store.dispatch('search/clearCategory');
     }
     next();
 });
