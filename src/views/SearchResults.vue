@@ -72,7 +72,7 @@
                 <v-row v-if="searchResults.auctions && searchResults.auctions.length">
                     <v-col v-for="auction in searchResults.auctions" :key="auction.auctionId" cols="12" sm="6" md="4">
                         <v-card>
-                            <v-img :src="auction.url || '/path/to/default/image.jpg'" height="200px" contain></v-img>
+                            <v-img :src="getImageUrl(auction.url)" height="200px" contain></v-img>
                             <v-card-title>{{ auction.itemName }}</v-card-title>
                             <v-card-text>
                                 <p>시작가: {{ auction.startPrice.toLocaleString() }}원</p>
@@ -93,6 +93,7 @@
 
 <script>
 import { mapState, mapActions } from 'vuex';
+import noImage from '@/assets/no-image.png';
 
 export default {
     name: 'SearchResults',
@@ -137,6 +138,10 @@ export default {
                 sort: this.$route.query.sort || '최신순',
             };
             this.setSearchParams(newParams);
+        },
+
+        getImageUrl(url) {
+            return url || noImage;
         },
     },
     watch: {
