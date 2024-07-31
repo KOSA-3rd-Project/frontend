@@ -36,12 +36,12 @@
             <v-icon>mdi-heart-outline</v-icon>
         </v-btn>
 
-        <v-btn icon class="ml-4" v-if="isLogIn">
+        <v-btn icon class="ml-4" to="/my-page" v-if="isLogIn">
             <v-icon>mdi-account-circle-outline</v-icon>
         </v-btn>
 
         <v-btn class="ml-4" to="/signin" v-if="!isLogIn" dark rounded> Login </v-btn>
-        <v-btn class="ml-4" v-if="isLogIn" @click="logout" dark rounded> Logout </v-btn>
+        <v-btn class="ml-4" to="/" v-if="isLogIn" @click="logout" dark rounded> Logout </v-btn>
         <v-btn class="ml-4" to="/signup" v-if="!isLogIn" dark rounded> Sign in </v-btn>
     </v-app-bar>
 </template>

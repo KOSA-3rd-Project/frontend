@@ -1,6 +1,6 @@
 <template>
-    <div class="title-container">
-        <h1>{{ title }}</h1>
+    <div>
+        <v-tab href="#mobile-tabs-5-1">{{ title }}</v-tab>
     </div>
 </template>
 
@@ -15,8 +15,4 @@ export default {
 };
 </script>
 
-<style scoped>
-.title-container {
-    margin: 100px 0px 30px 0px;
-}
-</style>
+<style scoped></style>

@@ -1,6 +1,7 @@
 import HomePage from '@/views/HomePage.vue';
 import SignInPage from '@/views/SignInPage.vue';
 import SignUpPage from '@/views/SignUpPage.vue';
+import MyPage from '@/views/MyPage.vue';
 import SearchResults from '@/views/SearchResults.vue';
 
 import RegisterAuctionPage from '@/views/RegisterAuctionPage.vue';
@@ -62,6 +63,11 @@ export default [
         path: '/signup',
         name: 'SignUpPage',
         component: SignUpPage,
+    },
+    {
+        path: '/my-page',
+        name: 'MyPage',
+        component: MyPage,
     },
     {
         path: '/search',
