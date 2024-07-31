@@ -30,7 +30,7 @@
                     </v-col>
                 </v-row>
                 <v-card-actions>
-                    <v-btn class="ml-2" color="black" rounded dark @click="viewProduct" style="width: 50%"> 제품 보러가기 → </v-btn>
+                    <v-btn class="ml-2" color="black" rounded dark :to="`/auction/${monthlyAuction.auctionId}`" style="width: 50%"> 제품 보러가기 → </v-btn>
                 </v-card-actions>
             </v-col>
             <v-col cols="12" md="6" class="d-flex align-center justify-center">
@@ -76,9 +76,6 @@ export default {
         },
         formatPrice(price) {
             return price.toLocaleString('ko-KR');
-        },
-        viewProduct() {
-            console.log('View product:', this.monthlyAuction.auctionId);
         },
         startTimer() {
             this.updateRemainingTime();
