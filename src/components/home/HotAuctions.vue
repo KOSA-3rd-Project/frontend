@@ -2,7 +2,7 @@
     <div class="carousel-container">
         <v-divider class="mt-1 mb-2 mx-auto" style="width: 1000px"></v-divider>
         <h2 class="text-center">입찰이 많은 경매</h2>
-        <v-carousel hide-delimiters show-arrows-on-hover height="auto" style="width: 1000px; margin: 0 auto">
+        <v-carousel v-if="hotAuctions.length > 0" hide-delimiters show-arrows-on-hover height="auto" style="width: 1000px; margin: 0 auto">
             <v-carousel-item v-for="(group, index) in auctionGroups" :key="index">
                 <v-container>
                     <v-row>
@@ -32,6 +32,11 @@
                 </v-container>
             </v-carousel-item>
         </v-carousel>
+        <v-card v-else class="text-center pa-5" style="width: 1000px; margin: 0 auto">
+            <v-card-text>
+                <p class="text-h6">현재 등록된 경매가 없습니다.</p>
+            </v-card-text>
+        </v-card>
     </div>
 </template>
 
@@ -65,12 +70,11 @@ export default {
             this.$axios
                 .get('/auctions/popular')
                 .then((res) => {
-                    this.hotAuctions = res.data.auctions;
-                    console.log('서버 메시지: ', res.data.message);
+                    this.hotAuctions = res.data.auctions || [];
                 })
                 .catch((err) => {
                     console.error('getHotAuctions() 실행 중 에러 발생: ', err);
-                    alert('getHotAuctions() 실행 중 에러 발생: ' + err.message);
+                    this.hotAuctions = [];
                 });
         },
 

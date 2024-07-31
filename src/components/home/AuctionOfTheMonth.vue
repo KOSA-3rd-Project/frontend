@@ -38,6 +38,11 @@
             </v-col>
         </v-row>
     </v-card>
+    <v-card v-else class="mt-4 mx-auto text-center pa-5" max-width="1000">
+        <v-card-text>
+            <p class="text-h6">현재 이 달의 경매 상품이 없습니다.</p>
+        </v-card-text>
+    </v-card>
 </template>
 
 <script>
@@ -67,17 +72,16 @@ export default {
             this.$axios
                 .get('/auctions/month')
                 .then((res) => {
-                    this.monthlyAuction = res.data.auction;
-                    console.log('서버 메시지: ', res.data.message);
+                    this.monthlyAuction = res.data.auction || {};
                     this.startTimer();
                 })
                 .catch((err) => {
                     console.error('getMonthlyAuction() 실행 중 에러 발생:', err);
-                    alert(err.message);
+                    this.monthlyAuction = {};
                 });
         },
         formatPrice(price) {
-            return price.toLocaleString('ko-KR');
+            return price ? price.toLocaleString('ko-KR') : '0';
         },
         startTimer() {
             this.updateRemainingTime();
