@@ -88,6 +88,6 @@ export default {
 }
 .error-message {
     color: red;
-    font-size: 10px;
+    font-size: 12px;
 }
 </style>

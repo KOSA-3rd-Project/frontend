@@ -1,5 +1,6 @@
 import axios from 'axios';
 import store from '@/store';
+import router from '@/router';
 
 const axiosInstance = axios.create();
 
@@ -38,9 +39,11 @@ axiosInstance.interceptors.response.use(
                 })
                 .catch(() => {
                     store.dispatch('member/logout');
+                    if (router.currentRoute.path !== '/signin') {
+                        router.push('/signin');
+                    }
                 });
         }
-
         return Promise.reject(error);
     },
 );

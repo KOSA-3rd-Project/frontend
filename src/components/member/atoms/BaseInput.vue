@@ -5,9 +5,11 @@
             v-model="internalValue"
             :label="label"
             :type="type"
-            :rules="rules"
+            :rules="computedRules"
             :autocomplete="autocomplete"
             :style="inputStyles"
+            :disabled="disabled"
+            ref="input"
             @input="updateValue"
             outlined
         ></v-text-field>
@@ -41,6 +43,14 @@ export default {
             type: String,
             default: '',
         },
+        disabled: {
+            type: Boolean,
+            default: false,
+        },
+        errorMessage: {
+            type: String,
+            default: '',
+        },
     },
     data() {
         return {
@@ -53,10 +63,16 @@ export default {
                 width: this.width,
             };
         },
+        computedRules() {
+            return this.errorMessage ? [...this.rules, () => this.errorMessage] : this.rules;
+        },
     },
     methods: {
         updateValue(event) {
             this.$emit('input', event);
+        },
+        validate() {
+            return this.$refs.input.validate();
         },
     },
     watch: {
