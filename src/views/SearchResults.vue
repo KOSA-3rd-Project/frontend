@@ -222,7 +222,7 @@ export default {
         if (this.$route.query) {
             this.setSearchParams(this.$route.query);
             this.currentPage = parseInt(this.$route.query.page) || 1;
-            await HTMLDListElement.searchAuctions();
+            await this.searchAuctions();
         }
 
         // 컴포넌트가 생성될 때 스토어의 값으로 로컬 상태 초기화
