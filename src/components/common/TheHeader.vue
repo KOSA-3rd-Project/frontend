@@ -7,10 +7,18 @@
             <v-img src="@/assets/team-logo.png" max-height="60" max-width="200" contain class="mr-10"></v-img>
         </router-link>
 
-        <v-btn text>
-            Category
-            <v-icon>mdi-chevron-down</v-icon>
-        </v-btn>
+        <v-select
+            v-model="selectedCategory"
+            :items="categoryOptions"
+            label="Category"
+            dense
+            hide-details
+            solo
+            flat
+            background-color="rgba(245,245,245,1)"
+            style="max-width: 150px"
+            @change="onCategorySelect"
+        ></v-select>
 
         <v-spacer></v-spacer>
 
@@ -47,56 +55,85 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
+import { mapGetters, mapActions } from 'vuex';
 
 export default {
     data() {
         return {
             searchQuery: '',
+            categoryOptions: [
+                { text: '패션', value: '패션' },
+                { text: '가전', value: '가전' },
+                { text: '스포츠', value: '스포츠' },
+                { text: '수집품', value: '수집품' },
+            ],
         };
     },
     computed: {
-        ...mapGetters({ access_token: 'member/getAccessToken' }),
+        ...mapGetters({
+            access_token: 'member/getAccessToken',
+            selectedCategory: 'search/getSelectedCategory',
+        }),
         isLogIn() {
             return !!this.access_token;
         },
     },
 
     methods: {
+        ...mapActions({
+            setCategory: 'search/setCategory',
+            clearCategory: 'search/clearCategory',
+            newSearch: 'search/newSearch',
+        }),
+
+        async onCategorySelect(category) {
+            if (!category) return;
+            await this.setCategory(category);
+            this.$router.push({ path: '/search', query: { category } });
+        },
+
         async search() {
-            if (this.searchQuery.trim()) {
-                try {
-                    // Spring 백엔드로 검색 요청
-                    const response = await this.$axios.get(`/search?q=${this.searchQuery}`);
+            const trimmedQuery = this.searchQuery.trim();
 
-                    // 검색 결과를 Vuex store에 저장
-                    this.$store.commit('search/setSearchResults', response.data);
+            if (trimmedQuery) {
+                await this.newSearch(trimmedQuery);
+            }
 
-                    // 현재 경로가 '/search'인 경우 $router.push 대신 $router.replace 사용
-                    if (this.$route.path === '/search') {
-                        await this.$router.replace({
-                            path: '/search',
-                            query: { q: this.searchQuery },
-                        });
-                    } else {
-                        await this.$router.push({
-                            path: '/search',
-                            query: { q: this.searchQuery },
-                        });
-                    }
-
-                    // SearchResults 컴포넌트의 검색 메서드 호출
-                    if (this.$root.$refs.searchResults) {
-                        this.$root.$refs.searchResults.performSearch();
-                    }
-                } catch (error) {
-                    console.error('검색 중 오류 발생: ', error);
-                }
+            // 현재 경로가 /search이고 쿼리가 같다면 강제로 리로드
+            if (this.$route.path === '/search' && this.$route.query.q === trimmedQuery) {
+                // 같은 페이지 리로드
+                await this.$router.replace({ path: '/search', query: { q: trimmedQuery, _: Date.now() } });
+            } else {
+                // 다른 페이지로 이동 또는 다른 검색어로 검색
+                await this.$router.push({ path: 'search', query: { q: trimmedQuery } });
             }
         },
+
         logout() {
             this.$store.dispatch('member/logout');
+            this.clearCategory();
         },
+
+        clearSearchQuery() {
+            this.searchQuery = '';
+        },
+    },
+
+    watch: {
+        $route(to, from) {
+            if (to.path !== '/search' && from.path === '/search') {
+                this.clearCategory();
+                this.clearSearchQuery();
+            }
+        },
+    },
+
+    created() {
+        // 컴포넌트가 생성될 때 현재 라우트의 쿼리에서 검색어를 가져와 설정
+        const query = this.$route.query.q;
+        if (query) {
+            this.searchQuery = query;
+        }
     },
 };
 </script>
