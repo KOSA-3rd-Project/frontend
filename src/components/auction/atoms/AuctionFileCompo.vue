@@ -43,8 +43,8 @@ export default {
     triggerFileInput() {
       this.$refs.fileInput.click();
     },
-    handleFileChange(event) {
-      const files = event.target.files;
+    handleFileChange() {
+      const files = this.$refs.fileInput.files;
       this.$emit('files-selected', files);
     }
   }
