@@ -1,5 +1,5 @@
 <template>
-<v-row>
+<v-row class="rows">
     <v-col cols="12">
         <v-row align="center">
             <v-col cols="auto">
@@ -20,7 +20,8 @@
 export default {
     props: {
         label: {
-        type: String,
+            //default:"",
+            type: String,
         }
     },
 }
@@ -29,5 +30,8 @@ export default {
 <style scoped>
 .label {
   width: 200px;
+}
+.rows {
+ width: 1000px;
 }
 </style>

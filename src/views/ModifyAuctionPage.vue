@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <h2>경매 상품 수정</h2>
+  <div class="container">
+    <base-title title="경매 상품 수정"></base-title>
     <auction-form-compo
       v-if="isDataLoaded"
       :initialAuctionData="auctionData"
@@ -8,9 +8,6 @@
       :initialMainImageIndex="mainImageIndex"
       :isEditMode="true"
     >
-      <template v-slot:submitBtn>
-        수정하기
-      </template>
     </auction-form-compo>
     <div v-else>
       <p>Loading...</p>
@@ -20,11 +17,13 @@
 
 <script>
 import AuctionFormCompo from '@/components/auction/AuctionFormCompo.vue';
+import BaseTitle from '@/components/member/atoms/BaseTitle.vue';
 import axios from 'axios';
 
 export default {
   components: {
     AuctionFormCompo,
+    BaseTitle,
   },
   data() {
     return {
@@ -75,5 +74,11 @@ export default {
 </script>
 
 <style scoped>
-
+  .container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 1200px; /* 컨테이너의 너비를 1200px로 설정 */
+    margin: 0 auto; /* 가로 방향 가운데 정렬 */
+  }
 </style>

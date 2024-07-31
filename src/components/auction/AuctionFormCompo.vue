@@ -22,7 +22,7 @@
 
     <auction-input-compo label="판매 기간">
       <auction-text-field-compo v-model="auctionForm.startDate" type="datetime-local" :min="currentDateTime" @change="validateStartDate"/>
-      <auction-text-field-compo v-model="auctionForm.dueDateDate" type="datetime-local" :min="startDateTime" @change="validateDueDate"/>
+      <auction-text-field-compo v-model="auctionForm.dueDate" type="datetime-local" :min="startDateTime" @change="validateDueDate"/>
       <!-- <input type="datetime-local" v-model="auctionForm.dueDate" :min="startDateTime" @change="validateDueDate" required> -->
     </auction-input-compo>
 
@@ -39,16 +39,18 @@
       @files-selected="onFileChange"
     />
     </auction-input-compo>
-    <div v-if="imagePreviews.length">
-      <div class="image-preview-container">
-        <div v-for="(image, index) in imagePreviews" :key="index" class="image-preview">
-          <button type="button" class="remove-button" @click="removeImage(index)">X</button>
-          <img :src="image" :alt="'미리보기 ' + (index + 1)" width="100" height="100" @click="setMainImage(index)">
-            <label id="main-image-label" v-if="mainImageIndex === index">대표 사진</label>
+    <auction-input-compo>
+      <div v-if="imagePreviews.length">
+        <div class="image-preview-container">
+          <div v-for="(image, index) in imagePreviews" :key="index" class="image-preview">
+            <button type="button" class="remove-button" @click="removeImage(index)">X</button>
+            <img :src="image" :alt="'미리보기 ' + (index + 1)" width="100" height="100" @click="setMainImage(index)">
+              <label id="main-image-label" v-if="mainImageIndex === index">대표 사진</label>
+          </div>
         </div>
       </div>
-    </div>
-    <BaseButton type="submit" :disabled="isSubmitting"><slot name="submitBtn"></slot></BaseButton>
+    </auction-input-compo>
+      <BaseButton type="submit" :disabled="isSubmitting" :buttonName="buttonText" backgroundColor="#000" color="#fff" borderColor="#000"></BaseButton>
     </form>
 </template>
 
@@ -129,7 +131,7 @@ const updateAuction = async (auctionForm, images, mainImageIndex, deletedImages,
     const res = await axios.put(`/auctions/${auctionForm.auctionId}`, formData, {
       withCredentials: true,
     });
-    if (res.status === 200) {
+    if (res.status === 200) { 
       return true;
     } else {
       console.log(res.statusText);
@@ -205,11 +207,8 @@ export default {
       
     },
     methods:{
-      triggerFileInput() {
-        this.$refs.fileInput.click();
-      },
-      onFileChange(event) {
-        const selectedFiles = Array.from(this.$refs.imageFiles.files);
+      onFileChange(files, event) {
+        const selectedFiles = Array.from(files);
         let totalFiles = 0;
         totalFiles = this.images.length + selectedFiles.length;
         if (totalFiles > 10) {
@@ -326,7 +325,10 @@ export default {
       },
       startDateTime() {
         return this.auctionForm.startDate ? this.auctionForm.startDate : this.currentDateTime;
-      }
+      },
+      buttonText() {
+        return this.isEditMode ? '수정하기' : '등록하기';
+      },
     }
 }
 </script>
@@ -343,8 +345,8 @@ export default {
   }
   .remove-button {
     position: absolute;
-    top: 5px;
-    right: 5px;
+    top: -5px;
+    right: -5px;
     background: white; 
     border: 2px solid black;
     border-radius: 50%;
@@ -357,8 +359,8 @@ export default {
   }
   #main-image-label {
     position: absolute;
-    bottom: 20px;
-    right: 15px;
+    bottom: 6px;
+    right: 0px;
     height: 20px;
     width: 100px;
     color: white;
@@ -366,5 +368,10 @@ export default {
     font-size: 15px;
     background-color: #000;
     opacity:0.5; 
+  }
+  form {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* 버튼을 가운데 정렬 */
   }
 </style>
