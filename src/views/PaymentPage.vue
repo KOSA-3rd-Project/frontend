@@ -68,7 +68,7 @@ export default {
           localStorage.setItem('formData', JSON.stringify(form));
 
           // Send payment completion request to server
-          fetch(`/payment`, {
+          fetch(`http://localhost:8080/payment`, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json'

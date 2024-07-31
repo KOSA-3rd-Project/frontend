@@ -6,10 +6,6 @@
         <label for="auctionId">Auction ID:</label>
         <input v-model="auctionId" type="number" id="auctionId" required />
       </div>
-      <div>
-        <label for="memberId">Member ID:</label>
-        <input v-model="memberId" type="number" id="memberId" required />
-      </div>
       <button type="submit">Create Chat Room</button>
     </form>
     <p v-if="message">{{ message }}</p>
@@ -17,32 +13,22 @@
 </template>
 
 <script>
-import axios from 'axios';
+import axiosInstance from '../utils/axiosinstance.js';
 
 export default {
   data() {
     return {
       auctionId: '',
-      memberId: '',
       message: ''
     };
   },
   methods: {
     async createChatRoom() {
       const auctionId = Number(this.auctionId);
-      const memberId = Number(this.memberId);
-      
-      if (isNaN(auctionId) || isNaN(memberId)) {
-        this.message = 'Auction ID and Member ID must be valid numbers';
-        return;
-      }
-      
+
       try {
-        const response = await axios.post('http://localhost:8080/chat', null, {
-          params: {
+        const response = await axiosInstance.post('http://localhost:8080/chat', {
             auctionId: auctionId,
-            memberId: memberId
-          }
         });
         
         const chatRoomId = response.data;
