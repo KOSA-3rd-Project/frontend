@@ -12,6 +12,7 @@ import AuctionDetailPage from '@/views/AuctionDetailPage.vue';
 
 import ChatPage from '@/views/ChatPage.vue';
 import ChatRoomPage from '@/views/ChatRoomPage.vue';
+import ChatListPage from '@/views/ChatListPage.vue';
 
 export default [
     {
@@ -46,6 +47,11 @@ export default [
     },
     {
         path: '/chat',
+        name: 'ChatListPage',
+        component: ChatListPage,
+    },
+    {
+        path: '/chatroom',
         name: 'ChatRoomPage',
         component: ChatRoomPage,
     },
