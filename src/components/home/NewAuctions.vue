@@ -7,17 +7,23 @@
                 <v-container>
                     <v-row>
                         <v-col v-for="item in group" :key="item.auctionId" cols="12" sm="6" md="3">
-                            <v-card>
-                                <v-img src="@/assets/logo.png" height="200px" contain></v-img>
-                                <v-card-title>{{ item.itemName }}</v-card-title>
-                                <v-card-text>
-                                    <div class="d-flex justify-space-between mb-1 price-info">
-                                        <div class="price-label">시작 가격:</div>
-                                        <div class="price-value">{{ formatPrice(item.startPrice) }} 원</div>
+                            <v-card height="400px" class="d-flex flex-column" @click="navigateToAuction(item.auctionId)" :class="{ 'clickable-card': true }">
+                                <v-img :src="getImageUrl(item.url)" height="200px" contain></v-img>
+                                <v-card-title class="title-container pa-2">
+                                    <div class="title-content" :style="{ fontSize: calculateFontSize(item.itemName) }">
+                                        {{ item.itemName }}
                                     </div>
-                                    <div class="d-flex justify-space-between price-info">
-                                        <div class="price-label">입찰 가격:</div>
-                                        <div class="price-value">{{ formatPrice(item.highestBid) }} 원</div>
+                                </v-card-title>
+                                <v-card-text class="flex-grow-1 d-flex flex-column justify-space-between">
+                                    <div>
+                                        <div class="d-flex justify-space-between mb-1" style="color: black">
+                                            <span class="body-2">시작 가격:</span>
+                                            <span class="body-2 font-weight-bold">{{ formatPrice(item.startPrice) }} 원</span>
+                                        </div>
+                                        <div class="d-flex justify-space-between" style="color: black">
+                                            <span class="body-2">입찰 가격:</span>
+                                            <span class="body-2 font-weight-bold">{{ formatPrice(item.highestBid) }} 원</span>
+                                        </div>
                                     </div>
                                 </v-card-text>
                             </v-card>
@@ -30,6 +36,8 @@
 </template>
 
 <script>
+import noImage from '@/assets/no-image.png';
+
 export default {
     name: 'NewAuctions',
     data() {
@@ -70,19 +78,45 @@ export default {
         formatPrice(price) {
             return price.toLocaleString('ko-KR');
         },
+
+        calculateFontSize(title) {
+            const baseSize = 20; // 기본 폰트 크기
+            const minSize = 12; // 최소 폰트 크기
+            const maxLength = 10; // 이 길이 이상이면 폰트 크기를 줄임
+
+            if (title.length <= maxLength) {
+                return `${baseSize}px`;
+            } else {
+                const newSize = Math.max(baseSize - (title.length - maxLength), minSize);
+                return `${newSize}px`;
+            }
+        },
+
+        navigateToAuction(auctionId) {
+            this.$router.push(`/auction/${auctionId}`);
+        },
+
+        getImageUrl(url) {
+            return url || noImage;
+        },
     },
 };
 </script>
 
 <style scoped>
-.price-info {
-    font-size: 14px;
+.title-container {
+    height: 80px; /* 제목 컨테이너의 고정 높이 */
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
-.price-label {
-    color: black;
+.clickable-card {
+    cursor: pointer;
+    transition: transform 0.2s;
 }
-.price-value {
-    font-weight: bold;
-    color: black;
+
+.clickable-card:hover {
+    transform: scale(1.03);
 }
 </style>
