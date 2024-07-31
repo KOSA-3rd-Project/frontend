@@ -85,7 +85,7 @@
                     </v-col>
                 </v-row>
                 <div v-else>검색 결과가 없습니다.</div>
-                <v-pagination v-model="currentPage" :length="searchResults.totalPages" :total-visible="5" @input="changePage" class="mt-4"></v-pagination>
+                <v-pagination v-model="currentPage" :length="totalPages" :total-visible="5" @input="changePage" class="mt-4"></v-pagination>
             </v-col>
         </v-row>
     </v-container>
@@ -115,21 +115,26 @@ export default {
     },
     computed: {
         ...mapState('search', ['searchResults', 'searchParams']),
+        totalPages() {
+            return this.searchResults.totalPages ? Number(this.searchResults.totalPages) : 0;
+        },
     },
     methods: {
         ...mapActions('search', ['searchAuctions', 'setSearchParams', 'resetFilters']),
 
         async changePage(page) {
+            const newPage = Number(page);
+
             // 같은 페이지를 클릭한 경우, 아무 작업도 하지 않음
-            if (page === this.currentPage) {
+            if (newPage === this.currentPage) {
                 return;
             }
 
             // 페이지 번호 업데이트
-            this.currentPage = page;
+            this.currentPage = newPage;
 
             // 검색 파라미터 업데이트 및 검색 수행
-            await this.updateSearchParams({ page });
+            await this.updateSearchParams({ newPage });
         },
 
         async updateSearchParams(newParams) {
@@ -217,12 +222,16 @@ export default {
             this.updateSearchParams({ page: newPage });
         },
     },
-    async created() {
-        // 초기 라우트 쿼리로 검색 파라미터 설정
+    created() {
+        // 컴포넌트가 생성될 때 현재 라우트의 쿼리로 검색 파라미터 설정
         if (this.$route.query) {
-            this.setSearchParams(this.$route.query);
-            this.currentPage = parseInt(this.$route.query.page) || 1;
-            await this.searchAuctions();
+            const params = { ...this.$route.query };
+            if (params.page) {
+                params.page = Number(params.page);
+            }
+            this.setSearchParams(params);
+            this.currentPage = params.page || 1;
+            this.searchAuctions();
         }
 
         // 컴포넌트가 생성될 때 스토어의 값으로 로컬 상태 초기화
