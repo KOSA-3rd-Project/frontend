@@ -6,6 +6,18 @@
         <auction-of-the-month></auction-of-the-month>
         <new-auctions></new-auctions>
         <hot-auctions></hot-auctions>
+        <v-btn
+            class="auction-btn"
+            fab
+            dark
+            x-large
+            color="black"
+            @click="goToRegisterAuctionPage"
+        >
+            <v-icon dark>
+                mdi-plus
+            </v-icon>
+        </v-btn>
     </div>
 </template>
 
@@ -21,7 +33,19 @@ export default {
         NewAuctions,
         HotAuctions,
     },
+    methods: {
+    goToRegisterAuctionPage() {
+      this.$router.push('/auction');
+    }
+  }
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+    .auction-btn {
+    position: fixed;
+    bottom: 50px; 
+    right: 50px;
+    z-index: 1000;
+    }
+</style>
