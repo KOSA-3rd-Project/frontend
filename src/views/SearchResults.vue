@@ -69,16 +69,16 @@
                         ></v-select>
                     </v-col>
                 </v-row>
-                <v-row v-if="searchResults.auctions && searchResults.auctions.length">
+                <v-row v-if="searchResults.auctions && searchResults.auctions.length" align="stretch">
                     <v-col v-for="auction in searchResults.auctions" :key="auction.auctionId" cols="12" sm="6" md="4">
-                        <v-card>
+                        <v-card height="100%" class="d-flex flex-column">
                             <v-img :src="getImageUrl(auction.url)" height="200px" contain></v-img>
                             <v-card-title>{{ auction.itemName }}</v-card-title>
-                            <v-card-text>
+                            <v-card-text class="flex-grow-1">
                                 <p>시작가: {{ auction.startPrice.toLocaleString() }}원</p>
                                 <p>최고 입찰가: {{ auction.highestBid.toLocaleString() }}원</p>
                             </v-card-text>
-                            <v-card-actions class="mt-n7">
+                            <v-card-actions>
                                 <v-btn color="primary" text :to="`/auction/${auction.auctionId}`">자세히 보기</v-btn>
                             </v-card-actions>
                         </v-card>
@@ -104,7 +104,7 @@ export default {
             selectedCondition: null,
             minPrice: '',
             maxPrice: '',
-            selectedSort: '최신순',
+            selectedSort: 'latest',
             sortOptions: [
                 { text: '최신순', value: 'latest' },
                 { text: '인기순', value: 'popular' },
@@ -117,52 +117,80 @@ export default {
         ...mapState('search', ['searchResults', 'searchParams']),
     },
     methods: {
-        ...mapActions('search', ['searchAuctions', 'setSearchParams']),
+        ...mapActions('search', ['searchAuctions', 'setSearchParams', 'resetFilters']),
 
-        changePage(page) {
-            this.setSearchParams({ ...this.setSearchParams, page });
-            this.$router.push({ query: { ...this.$route.query, page } });
-        },
-        async performSearch() {
-            await this.searchAuctions(this.searchParams);
+        async changePage(page) {
+            // 같은 페이지를 클릭한 경우, 아무 작업도 하지 않음
+            if (page === this.currentPage) {
+                return;
+            }
+
+            // 페이지 번호 업데이트
+            this.currentPage = page;
+
+            // 검색 파라미터 업데이트 및 검색 수행
+            await this.updateSearchParams({ page });
         },
 
-        updateSearchParams() {
-            const newParams = {
-                q: this.$route.query.q || '',
-                page: parseInt(this.$route.query.page) || 1,
-                category: this.$route.query.category || null,
-                condition: this.$route.query.condition || null,
-                minPrice: this.$route.query.minPrice || null,
-                maxPrice: this.$route.query.maxPrice || null,
-                sort: this.$route.query.sort || '최신순',
-            };
-            this.setSearchParams(newParams);
+        async updateSearchParams(newParams) {
+            const updatedParams = { ...this.searchParams, ...newParams };
+
+            await this.setSearchParams(updatedParams);
+
+            // 라우터 쿼리 업데이트
+            const currentQuery = { ...this.$route.query };
+            const newQuery = { ...currentQuery, ...newParams };
+
+            if (JSON.stringify(currentQuery) !== JSON.stringify(newQuery)) {
+                await this.$router.push({ query: newQuery }).catch((err) => {
+                    if (err.name !== 'NavigationDuplicated') {
+                        throw err;
+                    }
+                });
+            }
+
+            // 검색 수행
+            await this.searchAuctions(updatedParams);
         },
 
         getImageUrl(url) {
             return url || noImage;
         },
+
+        resetLocalFilters() {
+            this.selectedCategory = null;
+            this.selectedCondition = null;
+            this.minPrice = '';
+            this.maxPrice = '';
+            this.selectedSort = null;
+        },
     },
     watch: {
         $route: {
-            handler() {
-                this.updateSearchParams(), this.performSearch();
+            handler(to, from) {
+                const toPath = to && to.path;
+                const fromPath = from && from.path;
+                const toQuery = to && to.query;
+                const fromQuery = from && from.query;
+
+                if (toPath !== '/search' && fromPath === '/search') {
+                    // 검색 결과 페이지에서 다른 페이지로 이동할 때
+                    this.resetFilters();
+                    this.resetLocalFilters();
+                } else if (toPath === '/search' && toQuery && fromQuery && toQuery.q !== fromQuery.q) {
+                    // 새로운 검색어로 검색할 때
+                    this.resetFilters();
+                    this.resetLocalFilters();
+                }
             },
             immediate: true,
-        },
-
-        searchParams: {
-            handler() {
-                this.performSearch();
-            },
-            deep: true,
         },
 
         '$route.query': {
             handler(newQuery) {
                 //라우트 쿼리가 변경될 때만 검색 파라미터 업데이트
-                if (JSON.stringify(this.searchParams) !== JSON.stringify(newQuery)) {
+                // newQuery가 undefined가 아닌지 확인
+                if (newQuery && JSON.stringify(this.searchParams) !== JSON.stringify(newQuery)) {
                     this.setSearchParams(newQuery);
                 }
             },
@@ -184,16 +212,26 @@ export default {
         selectedSort(newSort) {
             this.setSearchParams({ ...this.searchParams, sort: newSort, page: 1 });
         },
+
+        currentPage(newPage) {
+            this.updateSearchParams({ page: newPage });
+        },
     },
-    mounted() {
-        // $root에서 이 컴포넌트에 접근할 수 있도록 ref 설정
-        this.$root.$refs.searchResults = this;
-    },
-    beforeDestroy() {
-        // 컴포넌트가 제거될 때 ref 제거
-        if (this.$root.$refs.searchResults === this) {
-            this.$root.$refs.searchResults = null;
+    async created() {
+        // 초기 라우트 쿼리로 검색 파라미터 설정
+        if (this.$route.query) {
+            this.setSearchParams(this.$route.query);
+            this.currentPage = parseInt(this.$route.query.page) || 1;
+            await HTMLDListElement.searchAuctions();
         }
+
+        // 컴포넌트가 생성될 때 스토어의 값으로 로컬 상태 초기화
+        this.selectedCategory = this.searchParams.category;
+        this.selectedCondition = this.searchParams.condition;
+        this.minPrice = this.searchParams.minPrice;
+        this.maxPrice = this.searchParams.maxPrice;
+        this.selectedSort = this.searchParams.sort;
+        this.currentPage = this.searchParams.page;
     },
 };
 </script>

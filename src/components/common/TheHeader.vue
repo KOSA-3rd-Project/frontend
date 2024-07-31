@@ -93,13 +93,29 @@ export default {
         },
 
         async search() {
-            await this.newSearch(this.searchQuery.trim());
-            this.$router.push({ path: '/search', query: { q: this.searchQuery.trim() } });
+            const trimmedQuery = this.searchQuery.trim();
+
+            if (trimmedQuery) {
+                await this.newSearch(trimmedQuery);
+            }
+
+            // 현재 경로가 /search이고 쿼리가 같다면 강제로 리로드
+            if (this.$route.path === '/search' && this.$route.query.q === trimmedQuery) {
+                // 같은 페이지 리로드
+                await this.$router.replace({ path: '/search', query: { q: trimmedQuery, _: Date.now() } });
+            } else {
+                // 다른 페이지로 이동 또는 다른 검색어로 검색
+                await this.$router.push({ path: 'search', query: { q: trimmedQuery } });
+            }
         },
 
         logout() {
             this.$store.dispatch('member/logout');
             this.clearCategory();
+        },
+
+        clearSearchQuery() {
+            this.searchQuery = '';
         },
     },
 
@@ -107,8 +123,17 @@ export default {
         $route(to, from) {
             if (to.path !== '/search' && from.path === '/search') {
                 this.clearCategory();
+                this.clearSearchQuery();
             }
         },
+    },
+
+    created() {
+        // 컴포넌트가 생성될 때 현재 라우트의 쿼리에서 검색어를 가져와 설정
+        const query = this.$route.query.q;
+        if (query) {
+            this.searchQuery = query;
+        }
     },
 };
 </script>
