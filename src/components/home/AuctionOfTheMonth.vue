@@ -34,13 +34,15 @@
                 </v-card-actions>
             </v-col>
             <v-col cols="12" md="6" class="d-flex align-center justify-center">
-                <v-img src="@/assets/logo.png" alt="Auction Item Image" class="rounded-lg" contain max-height="400" max-width="400"></v-img>
+                <v-img :src="getImageUrl(monthlyAuction.url)" alt="Auction Item Image" class="rounded-lg" contain max-height="400" max-width="400"></v-img>
             </v-col>
         </v-row>
     </v-card>
 </template>
 
 <script>
+import noImage from '@/assets/no-image.png';
+
 export default {
     name: 'AuctionOfTheMonth',
     data() {
@@ -103,6 +105,10 @@ export default {
                 { value: minutes, label: 'Mins' },
                 { value: seconds, label: 'Secs' },
             ];
+        },
+
+        getImageUrl(url) {
+            return url || noImage;
         },
     },
 

@@ -40,10 +40,6 @@
             <v-icon>mdi-chat-outline</v-icon>
         </v-btn>
 
-        <v-btn icon class="ml-4" v-if="isLogIn">
-            <v-icon>mdi-heart-outline</v-icon>
-        </v-btn>
-
         <v-btn icon class="ml-4" to="/my-page" v-if="isLogIn">
             <v-icon>mdi-account-circle-outline</v-icon>
         </v-btn>

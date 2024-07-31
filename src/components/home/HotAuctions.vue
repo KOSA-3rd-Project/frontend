@@ -8,7 +8,7 @@
                     <v-row>
                         <v-col v-for="item in group" :key="item.auctionId" cols="12" sm="6" md="3">
                             <v-card height="400px" class="d-flex flex-column" @click="navigateToAuction(item.auctionId)" :class="{ 'clickable-card': true }">
-                                <v-img src="@/assets/logo.png" height="200" contain></v-img>
+                                <v-img :src="getImageUrl(item.url)" height="200" contain></v-img>
                                 <v-card-title class="title-container pa-2">
                                     <div class="title-content" :style="{ fontSize: calculateFontSize(item.itemName) }">
                                         {{ item.itemName }}
@@ -36,6 +36,8 @@
 </template>
 
 <script>
+import noImage from '@/assets/no-image.png';
+
 export default {
     name: 'HotAuctions',
     data() {
@@ -91,6 +93,10 @@ export default {
 
         navigateToAuction(auctionId) {
             this.$router.push(`/auction/${auctionId}`);
+        },
+
+        getImageUrl(url) {
+            return url || noImage;
         },
     },
 };
