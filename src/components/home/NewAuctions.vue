@@ -2,7 +2,7 @@
     <div class="carousel-container">
         <v-divider class="mt-6 mb-2 mx-auto" style="width: 1000px"></v-divider>
         <h2 style="text-align: center">새로 등록된 경매</h2>
-        <v-carousel hide-delimiters show-arrows-on-hover height="auto" style="width: 1000px; margin: 0 auto">
+        <v-carousel v-if="newAuctions.length > 0" hide-delimiters show-arrows-on-hover height="auto" style="width: 1000px; margin: 0 auto">
             <v-carousel-item v-for="(group, index) in auctionGroups" :key="index">
                 <v-container>
                     <v-row>
@@ -32,6 +32,11 @@
                 </v-container>
             </v-carousel-item>
         </v-carousel>
+        <v-card v-else class="text-center pa-5" style="width: 1000px; margin: 0 auto">
+            <v-card-text>
+                <p class="text-h6">현재 등록된 경매가 없습니다.</p>
+            </v-card-text>
+        </v-card>
     </div>
 </template>
 
@@ -42,7 +47,7 @@ export default {
     name: 'NewAuctions',
     data() {
         return {
-            newAuctions: {},
+            newAuctions: [],
         };
     },
 
@@ -65,13 +70,11 @@ export default {
             this.$axios
                 .get('/auctions/new')
                 .then((res) => {
-                    this.newAuctions = res.data.auctions;
-
-                    console.log('서버 메시지: ', res.data.message);
+                    this.newAuctions = res.data.auctions || [];
                 })
                 .catch((err) => {
                     console.err('getNewAuctions() 실행 중 에러 발생: ', err);
-                    alert('getNewAuctions() 실행 중 에러 발생: ', err.message);
+                    this.newAuctions = [];
                 });
         },
 
