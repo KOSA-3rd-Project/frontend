@@ -38,7 +38,7 @@ export default {
     return {
       merchantUid: "order-" + new Date().getTime(),
       price: 0,
-      shippingFee: 3000,
+      shippingFee: 300,
       form: {
         name: '',
         phone: '',
@@ -76,9 +76,6 @@ export default {
 
         if (res.status === 200) {
           const { auctionData, images, mainImageIndex, biddingData } = res.data;
-          
-          console.log('Response Data:', res.data);
-
           this.auctionData = {
             itemName: auctionData.itemName,
             images: images,
@@ -86,12 +83,8 @@ export default {
             dueDate: auctionData.dueDate,
           };
           this.mainImageIndex = mainImageIndex;
-          this.biddingData = biddingData || {}; // Ensure biddingData is an object
-
-          console.log('Bidding Data:', this.biddingData);
-
-          this.price = this.biddingData.price || 0; // Set the price from biddingData or default to 0
-
+          this.biddingData = biddingData || {}; 
+          this.price = this.biddingData.price || 0;
           this.isAuctionDataLoaded = true;
         } else {
           console.log(res.statusText);
@@ -124,8 +117,11 @@ export default {
           // Save form data to localStorage
           localStorage.setItem('formData', JSON.stringify(form));
 
-          // Send payment completion request to server
-          axiosInstance.post('/payment/save', {
+          fetch(`/payment/save`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
             auctionId: this.$route.params.id,
             biddingSuccessId: 1,
             name: form.name,
@@ -137,14 +133,13 @@ export default {
               'Content-Type': 'application/json'
             }
           })
-          .then(response => {
-            if (response.status === 200) {
-              // Redirect to the status page
-              window.location.href = '/auctions/paymentstatus';
-            } else {
-              alert('결제 정보 업데이트에 실패했습니다.');
-            }
-          })
+          // .then(response => {
+          //   if (response.status === 200) {
+          //     window.location.href = '/auctions/paymentstatus';
+          //   } else {
+          //     alert('결제 정보 업데이트에 실패했습니다.');
+          //   }
+          // })
           .catch(error => {
             console.error('Error:', error);
             alert('결제 정보 업데이트 중 오류가 발생했습니다.');
@@ -159,7 +154,7 @@ export default {
     }
   },
   mounted() {
-    this.setAuctionData(); // Fetch auction data when the component mounts
+    this.setAuctionData();
   }
 }
 </script>
