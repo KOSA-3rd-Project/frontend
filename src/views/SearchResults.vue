@@ -84,8 +84,29 @@
                         </v-card>
                     </v-col>
                 </v-row>
-                <div v-else>검색 결과가 없습니다.</div>
-                <v-pagination v-model="currentPage" :length="totalPages" :total-visible="5" @input="changePage" class="mt-4"></v-pagination>
+                <v-row v-else class="mt-8">
+                    <v-col cols="12" class="text-center">
+                        <v-icon size="100" color="grey lighten-1">mdi-magnify-off</v-icon>
+                        <h2 class="mt-4 grey--text text--darken-1">검색 결과가 없습니다</h2>
+                        <p class="mt-2 grey--text">다른 키워드로 검색하거나 필터를 조정해 보세요.</p>
+                        <v-btn light class="mt-4" @click="resetSearch">
+                            <v-icon left>mdi-refresh</v-icon>
+                            필터 초기화
+                        </v-btn>
+                        <v-btn dark class="mt-4 ml-2" to="/">
+                            <v-icon left>mdi-home</v-icon>
+                            홈으로 돌아가기
+                        </v-btn>
+                    </v-col>
+                </v-row>
+                <v-pagination
+                    v-if="searchResults.auctions && searchResults.auctions.length"
+                    v-model="currentPage"
+                    :length="totalPages"
+                    :total-visible="5"
+                    @input="changePage"
+                    class="mt-4"
+                ></v-pagination>
             </v-col>
         </v-row>
     </v-container>
@@ -168,6 +189,24 @@ export default {
             this.minPrice = '';
             this.maxPrice = '';
             this.selectedSort = null;
+        },
+
+        async resetSearch() {
+            // 로컬 필터 초기화
+            this.resetLocalFilters();
+
+            // Vuex 스토러의 검색 파라미터 초기화
+            await this.resetFilters();
+
+            // 라우터 쿼리 파라미터 초기화 (검색어는 유지)
+            const searchQuery = this.$route.query.q;
+            await this.$router.push({
+                path: '/search',
+                query: searchQuery ? { q: searchQuery } : {},
+            });
+
+            // 검색 다시 수행
+            await this.searchAuctions();
         },
     },
     watch: {
