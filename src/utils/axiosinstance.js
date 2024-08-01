@@ -10,11 +10,13 @@ axiosInstance.interceptors.request.use(
 
         if (accessToken) {
             config.headers.Authorization = `Bearer ${accessToken}`;
+            console.log(accessToken);
         }
-
+        console.log(config);
         return config;
     },
     function (error) {
+        console.log("11111");
         return Promise.reject(error);
     },
 );
@@ -38,6 +40,7 @@ axiosInstance.interceptors.response.use(
                     return axiosInstance(originalRequest);
                 })
                 .catch(() => {
+                    console.log("gdgd")
                     store.dispatch('member/logout');
                     if (router.currentRoute.path !== '/signin') {
                         router.push('/signin');
