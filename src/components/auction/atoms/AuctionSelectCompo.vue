@@ -17,10 +17,10 @@
 
 <script>
 export default {
-    props: {
+  props: {
     value: {
       type: [String, Number],
-      required: true
+      default:''
     },
     items: {
       type: Array,

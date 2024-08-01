@@ -46,7 +46,7 @@ export default {
   methods: {
     async setAuctionData() {
       try {
-        const res = await axios.get(`/auctions/${this.$route.params.id}`, {
+        const res = await axios.get(`/auctions/all/${this.$route.params.id}`, {
           headers: {
             'Content-Type': 'application/json',
             withCredentials: true,

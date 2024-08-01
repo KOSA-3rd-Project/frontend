@@ -47,32 +47,46 @@
       </tr>
       <tr>
         <td class="aligncenter">현재가격</td>
-        <td class="alignright">{{ biddingData[0].price }}원</td>
+        <td class="alignright">
+          <p v-if="biddingData.length===0">
+            {{auctionData.startPrice}}원
+          </p>
+          <p v-else>
+            {{ biddingData[0].price }}원
+          </p>
+        </td>
       </tr>
       <tr>
         <td class="aligncenter">판매기간</td>
-        <td class="alignright">{{ formattedStartDate }} ~ {{ formattedDueDate }}<br>
-            {{ remainingTime }}</td>
+        <td class="alignright">
+          {{ formattedStartDate }} ~ {{ formattedDueDate }}<br>
+          <p v-if="auctionData.auctionStatusId===2"> {{ remainingTime }} </p>
+        </td>
       </tr>
       <tr>
         <td class="aligncenter">입찰상태</td>
         <td class="alignright">{{ biddingData.length }} bids</td>
       </tr>
-      <tr>
+      <tr v-if="auctionData.auctionStatusId===2">
         <td class="aligncenter" colspan="2">
             <v-dialog v-model="dialog"  max-width="500">
               <template v-slot:activator="{ on }">
-                <v-btn class="actionbutton" dark v-on="on" @click.stop="dialog = true">입찰하기</v-btn>
+                <base-button buttonName="입찰하기" type="submit" backgroundColor="#000" color="#fff" borderColor="#000" v-on="on" @click="dialog = true"></base-button>
               </template>
               <v-card>
                 <v-card-title class="headline">입찰 신청</v-card-title>
+                <!-- <v-divider inset></v-divider> -->
                 <v-card-text>
                   <v-layout row wrap>
                         <v-flex xs12 sm6>
                           <p class="text-lg-h6 font-weight-bold">현재 입찰가</p>
                         </v-flex>
                         <v-flex xs12 sm6>
-                          <p class="text-lg-h6 font-weight-bold">{{ biddingData[0].price }}원</p>
+                          <p v-if="biddingData.length===0" class="text-lg-h6 font-weight-bold">
+                            {{auctionData.startPrice}}원</p>
+                          <p v-else class="text-lg-h6 font-weight-bold">
+                            {{ biddingData[0].price }}원
+                          </p>
                         </v-flex>
                         <v-flex xs12 sm6>
                           <p class="text-lg-h6 font-weight-bold">입찰가</p>
@@ -88,40 +102,51 @@
                 </v-card-text>
                 <v-card-actions>
                   <v-spacer></v-spacer>
-                  <v-btn color="dark" flat @click="submitBid()">입찰 하기</v-btn>
+                  <v-btn color="dark" @click="submitBid()">입찰 하기</v-btn>
                 </v-card-actions>
               </v-card>
             </v-dialog>
         </td>
       </tr>
-      <tr>
-        <td colspan="3">
-          <span 
-            class="middletitle" 
-            :class="{ unbold: selectedMenu !== 'description' }" 
-            @click="showAuctionDescription"
-          >상품설명&nbsp;&nbsp;&nbsp;</span>
-          <span 
-            class="middletitle" 
-            :class="{ unbold: selectedMenu !== 'bidHistory' }" 
-            @click="showBidHistory"
-          >입찰내역</span>
-        </td>
-      </tr>
-      <tr>
-        <td colspan="3">
-          <div v-if="selectedMenu === 'description'">{{ auctionData.description }}</div>
-          <div v-if="selectedMenu === 'bidHistory'">
-            <div v-for = "(bidding, index) in biddingData" :key="index">
-              <span> {{ index+1 }}
-              {{ bidding.price }}
-              {{ bidding.memberId}}
-              {{ bidding.time }}</span>
-            </div>
-          </div>
-        </td>
+      <tr v-else>
       </tr>
     </table>
+    <div class="menu">
+      <span 
+        class="middletitle" 
+        :class="{ unbold: selectedMenu !== 'description' }" 
+        @click="showAuctionDescription"
+      >상품설명&nbsp;&nbsp;&nbsp;</span>
+      <span 
+        class="middletitle" 
+        :class="{ unbold: selectedMenu !== 'bidHistory' }" 
+        @click="showBidHistory"
+      >입찰내역</span>
+    </div>
+    <div v-if="selectedMenu === 'description'">{{ auctionData.description }}</div>
+    <v-simple-table
+      v-if="selectedMenu === 'bidHistory'"
+      class="bid-history-table">
+      <thead>
+        <tr>
+          <th class="text-center">번호</th>
+          <th class="text-center">입찰가</th>
+          <th class="text-center">회원 ID</th>
+          <th class="text-center">시간</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-if="biddingData.length === 0">
+          <td colspan="4">입찰 내역이 없습니다.</td>
+        </tr>
+        <tr v-else v-for="(bidding, index) in biddingData" :key="index">
+          <td class="text-center">{{ index + 1 }}</td>
+          <td class="text-center">{{ bidding.price }}원</td>
+          <td class="text-center">{{ bidding.memberEmail }}</td>
+          <td class="text-center">{{ formatBidTime(bidding.time) }}</td>
+        </tr>
+      </tbody>
+    </v-simple-table>
     <!-- 성공 메시지 모달 -->
     <v-dialog v-model="successDialog" max-width="500">
       <v-card>
@@ -131,7 +156,7 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="dark" flat @click="successDialog = false">확인</v-btn>
+          <v-btn color="dark" @click="successDialog = false">확인</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -145,8 +170,11 @@
 <script>
 import axios from 'axios';
 import moment from 'moment';
+import axiosInstance from '../utils/axiosinstance';
+import BaseButton from '@/components/member/atoms/BaseButton.vue';
 
 export default {
+  components: { BaseButton },
   name: 'AuctionDetailPage',
   data() {
     return {
@@ -170,7 +198,7 @@ export default {
       isBiddingDataLoaded: false,
       selectedMenu: 'description',
       bidHistory:"",
-      remainingTime: "",
+      remainingTime: "0일 0시간 0분 0초",
       dialog : false,
       newBidingPrice:null,
       successDialog: false,
@@ -181,7 +209,7 @@ export default {
   methods: {
     async setAuctionData() {
       try {
-        const res = await axios.get(`/auctions/${this.$route.params.id}`, {
+        const res = await axios.get(`/auctions/all/${this.$route.params.id}`, {
           headers: {
             'Content-Type': 'application/json',
             withCredentials: true,
@@ -193,21 +221,28 @@ export default {
           this.auctionData = res.data.auctionData;
           this.images = res.data.images;
           this.mainImageIndex = res.data.mainImageIndex;
+
+          this.auctionData.startDate = this.formatToDatetimeLocal(this.auctionData.startDate);
+          this.auctionData.dueDate = this.formatToDatetimeLocal(this.auctionData.dueDate);
+
+          // this.auctionData.startDate = moment(this.auctionData.startDate).format();
+          // this.auctionData.dueDate = moment(this.auctionData.dueDate).format();
+
+          // this.auctionData.startDate = moment.utc(this.auctionData.startDate).local().format();
+          // this.auctionData.dueDate = moment.utc(this.auctionData.dueDate).local().format();
+
+          console.log(this.auctionData);
           this.isAuctionDataLoaded = true; // 데이터 로드 완료
         } else {
           console.log(res.statusText);
         }
       } catch (error) {
-        console.error('Error:', error);
+        console.error('Axios Error:', error);
       }
     },
     async setBiddingData() {
       try {
-        const res = await axios.get(`/auctions/${this.$route.params.id}/bids`, {
-          headers: {
-            withCredentials: true,
-          },
-        });
+        const res = await axios.get(`/auctions/all/${this.$route.params.id}/bids`);
 
         if (res.status === 200) {
           console.log(res.data);
@@ -217,7 +252,7 @@ export default {
           console.log(res.statusText);
         }
       } catch (error) {
-        console.error('Error:', error);
+        console.error('Axios Error:', error);
       }
     },
     async submitBid(){
@@ -229,11 +264,7 @@ export default {
       formData.append("price", this.newBidingPrice);
 
       try {
-        const res = await axios.post(`/auctions/${this.$route.params.id}/bids`, formData, {
-          headers: {
-            withCredentials: true,
-          },
-        });
+        const res = await axiosInstance.post(`/auctions/${this.$route.params.id}/bids`, formData);
 
         if (res.status === 200) {
           console.log(res.data);
@@ -245,29 +276,43 @@ export default {
           console.log(res.statusText);
         }
       } catch (error) {
-        console.error('Error:', error);
+        console.error('Axios Error:', error);
       }
     },
     validateBidPrice() {
       this.errorMessages = [];
       this.isBidPriceValid = true;
 
-      if (this.newBidingPrice <= this.biddingData[0].price) {
+      if (this.biddingData.length === 0) {
+        if (this.newBidingPrice < this.auctionData.startPrice) {
+          this.errorMessages.push(`입찰가는 시작가(${this.auctionData.startPrice}) 이상이어야 합니다.`);
+          this.isBidPriceValid = false;
+        }
+      } else if (this.newBidingPrice <= this.biddingData[0].price) {
         this.errorMessages.push(`입찰가는 현재 입찰가(${this.biddingData[0].price})보다 커야 합니다.`);
         this.isBidPriceValid = false;
       }
     },
      updateRemainingTime() {
+      if (!this.auctionData.dueDate) {
+        this.remainingTime = "0일 0시간 0분 0초";
+        return;
+      }
+
       const now = moment();
       const dueDate = moment(this.auctionData.dueDate);
       const duration = moment.duration(dueDate.diff(now));
 
-      const days = duration.days();
-      const hours = duration.hours();
-      const minutes = duration.minutes();
-      const seconds = duration.seconds();
+      if (duration.asMilliseconds() <= 0) {
+        this.remainingTime = "0일 0시간 0분 0초";
+      } else {
+        const days = Math.floor(duration.asDays());
+        const hours = duration.hours();
+        const minutes = duration.minutes();
+        const seconds = duration.seconds();
+        this.remainingTime = `${days}일 ${hours}시간 ${minutes}분 ${seconds}초 남음`;
+      }
 
-      this.remainingTime = `${days}일 ${hours}시간 ${minutes}분 ${seconds}초 남음`;
     },
     startTimer() {
       this.timer = setInterval(this.updateRemainingTime, 1000);
@@ -280,6 +325,21 @@ export default {
     },
     showAuctionDescription(){
       this.selectedMenu = 'description';
+    },
+    formatBidTime(time) {
+      return moment(time).format('YYYY년 MM월 DD일 HH시 mm분');
+    },
+    formatToDatetimeLocal(dateString) {
+        const date = new Date(dateString);
+        const offset = date.getTimezoneOffset(); // 분 단위로 시간대 오프셋을 가져옵니다.
+        const localDate = new Date(date.getTime() + offset * 60000); // 오프셋을 고려하여 로컬 시간으로 변환합니다.
+        // 'yyyy-MM-ddThh:mm' 형식으로 변환
+        const year = localDate.getFullYear();
+        const month = String(localDate.getMonth() + 1).padStart(2, '0');
+        const day = String(localDate.getDate()).padStart(2, '0');
+        const hours = String(localDate.getHours()).padStart(2, '0');
+        const minutes = String(localDate.getMinutes()).padStart(2, '0');
+        return `${year}-${month}-${day}T${hours}:${minutes}`;
     }
   },
   mounted() {
@@ -291,7 +351,6 @@ export default {
   beforeDestroy() {
     this.stopTimer();
   },
-   
   computed: {
       formattedStartDate() {
         return moment(this.auctionData.startDate).format('YYYY년 MM월 DD일 HH시 mm분');
@@ -327,8 +386,8 @@ table {
 }
 
 tr, td {
-  height: 30px !important;
-  padding: 0px !important;
+  height: 30px;
+  padding: 0px;
   /* border: 1px solid black !important; */
 }
 
@@ -348,6 +407,9 @@ tr, td {
 
 .middletitle {
   cursor: pointer;
+}
+.menu {
+  margin-bottom:10px;
 }
 </style>
 
