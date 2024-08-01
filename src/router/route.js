@@ -36,12 +36,12 @@ export default [
         component: ModifyAuctionPage,
     },
     {
-        path: '/auctions/payment',
+        path: '/auctions/:id/payment',
         name: 'PaymentPage',
         component: PaymentPage,
     },
     {
-        path: '/auctions/paymentstatus',
+        path: '/auctions/:id/paymentstatus',
         name: 'PaymentStatusPage',
         component: PaymentStatusPage,
     },
