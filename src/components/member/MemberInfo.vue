@@ -25,7 +25,7 @@
 
             <base-button buttonName="수정하기" type="submit" width="800px" backgroundColor="#000" color="#fff" borderColor="#000"></base-button>
 
-            <base-button buttonName="탈퇴하기" type="button" width="800px" backgroundColor="#fff" color="#000" borderColor="#000"></base-button>
+            <base-button buttonName="탈퇴하기" type="button" @click="handleUpdateWithdrawal" width="800px" backgroundColor="#fff" color="#000" borderColor="#000"></base-button>
         </v-form>
     </div>
 </template>
@@ -44,6 +44,18 @@ const loadMemberInfo = async () => {
 
 const updateMemberInfo = async (memberInfoForm) => {
     const res = await axiosInstance.put('/members/info', memberInfoForm);
+
+    return res.data;
+};
+
+const updateMemberWithdrawal = async () => {
+    const res = await axiosInstance.put('/members/info/withdrawal');
+
+    return res.data;
+};
+
+const logout = async () => {
+    const res = await axiosInstance.put('/members/logout');
 
     return res.data;
 };
@@ -126,17 +138,24 @@ export default {
             }
 
             updateMemberInfo(this.memberInfoForm)
-                .then((result) => {
-                    this.memberInfoForm = {
-                        email: result.email,
-                        password: result.password,
-                        passwordCheck: result.password,
-                        nickname: result.nickname,
-                        name: result.name,
-                        sex: result.sex,
-                        birthday: result.birthday,
-                        address: result.address,
-                    };
+                .then(() => {
+                    logout()
+                        .then(() => {
+                            this.$store.dispatch('member/logout');
+                        })
+                        .catch((error) => {
+                            console.log(error);
+                        });
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+        },
+        handleUpdateWithdrawal: function () {
+            updateMemberWithdrawal()
+                .then(() => {
+                    alert('탈퇴 되었습니다.');
+                    this.to = '/';
                 })
                 .catch((error) => {
                     console.log(error);

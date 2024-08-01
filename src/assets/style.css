@@ -9,9 +9,7 @@
 .container {
     width: 100%;
     height: auto;
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 20px;
+    max-width: 1000px;
     font-size: 1rem;
 }
 
@@ -70,7 +68,7 @@
 
 /* 진행전 버튼 */
 .beforebtn {
-    background-color: #EEEEEE;
+    background-color: #eeeeee;
     color: #000000;
     font-size: 10px;
     border-radius: 5px;
@@ -79,8 +77,8 @@
 
 /* 진행중 버튼 */
 .ongoingbtn {
-    background-color: #EBFAEB;
-    color: #3CD139;
+    background-color: #ebfaeb;
+    color: #3cd139;
     font-size: 10px;
     border-radius: 5px;
     padding: 5px;
@@ -88,8 +86,8 @@
 
 /* 종료 버튼 */
 .finishbtn {
-    background-color: #FAD7E8;
-    color: #D90F79;
+    background-color: #fad7e8;
+    color: #d90f79;
     font-size: 10px;
     border-radius: 5px;
     padding: 5px;

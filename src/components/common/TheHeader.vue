@@ -45,13 +45,20 @@
         </v-btn>
 
         <v-btn class="ml-4" to="/signin" v-if="!isLogIn" dark rounded> Login </v-btn>
-        <v-btn class="ml-4" to="/" v-if="isLogIn" @click="logout" dark rounded> Logout </v-btn>
+        <v-btn class="ml-4" to="/" v-if="isLogIn" @click="handleLogout" dark rounded> Logout </v-btn>
         <v-btn class="ml-4" to="/signup" v-if="!isLogIn" dark rounded> Sign in </v-btn>
     </v-app-bar>
 </template>
 
 <script>
+import axiosInstance from '../../utils/axiosinstance';
 import { mapGetters, mapActions } from 'vuex';
+
+const logout = async () => {
+    const res = await axiosInstance.put('/members/logout');
+
+    return res.data;
+};
 
 export default {
     data() {
@@ -105,9 +112,19 @@ export default {
             }
         },
 
-        logout() {
-            this.$store.dispatch('member/logout');
-            this.clearCategory();
+        handleLogout: function () {
+            logout()
+                .then(() => {
+                    this.$store.dispatch('member/logout');
+                    this.clearCategory();
+
+                    if (this.$router.currentRoute.path !== '/') {
+                        this.$router.push('/');
+                    }
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
         },
 
         clearSearchQuery() {
