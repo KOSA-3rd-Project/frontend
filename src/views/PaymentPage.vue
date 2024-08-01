@@ -1,7 +1,13 @@
 <template>
-  <div class="container">
+  <div class="container" v-if="isAuctionDataLoaded">
     <div class="maintitle aligncenter">결제하기</div>
-    <ProductInfo :price="price" imageSrc="@/assets/00.jpg" />
+    <ProductInfo 
+      :price="price" 
+      :imageSrc="auctionData.images" 
+      :mainImageIndex="mainImageIndex"
+      :itemName="auctionData.itemName" 
+      :categoryName="auctionData.categoryName"
+      :dueDate="auctionData.dueDate" />
     <hr class="line"/>
     <ShippingInfoForm :form.sync="form" />
     <hr class="line"/>
@@ -10,9 +16,13 @@
       <v-btn class="actionbutton" type="submit" @click="submitForm">결제하기</v-btn>
     </div>
   </div>
+  <div v-else>
+    <p>Loading...</p>
+  </div>
 </template>
 
 <script>
+import axiosInstance from '@/utils/axiosinstance.js'
 import ProductInfo from '@/components/payment/ProductInfo.vue';
 import ShippingInfoForm from '@/components/payment/ShippingInfoForm.vue';
 import PaymentInfo from '@/components/payment/PaymentInfo.vue';
@@ -27,14 +37,25 @@ export default {
   data() {
     return {
       merchantUid: "order-" + new Date().getTime(),
-      price: 100,
-      shippingFee: 300,
+      price: 0,
+      shippingFee: 3000,
       form: {
         name: '',
         phone: '',
         address: '',
         message: ''
       },
+      auctionData: {
+        itemName: '',
+        images: [],
+        categoryName: '',
+        dueDate: ''
+      },
+      mainImageIndex: 0,
+      biddingData: {
+        price: 0,
+      },
+      isAuctionDataLoaded: false,
     };
   },
   computed: {
@@ -43,6 +64,42 @@ export default {
     }
   },
   methods: {
+    async setAuctionData() {
+      try {
+        const auctionId = this.$route.params.id;
+        const res = await axiosInstance.post('/payment', { auctionId }, {
+          headers: {
+            'Content-Type': 'application/json',
+            withCredentials: true,
+          },
+        });
+
+        if (res.status === 200) {
+          const { auctionData, images, mainImageIndex, biddingData } = res.data;
+          
+          console.log('Response Data:', res.data);
+
+          this.auctionData = {
+            itemName: auctionData.itemName,
+            images: images,
+            categoryName: auctionData.categoryName,
+            dueDate: auctionData.dueDate,
+          };
+          this.mainImageIndex = mainImageIndex;
+          this.biddingData = biddingData || {}; // Ensure biddingData is an object
+
+          console.log('Bidding Data:', this.biddingData);
+
+          this.price = this.biddingData.price || 0; // Set the price from biddingData or default to 0
+
+          this.isAuctionDataLoaded = true;
+        } else {
+          console.log(res.statusText);
+        }
+      } catch (error) {
+        console.error('Error:', error);
+      }
+    },
     submitForm() {
       const { merchantUid, totalprice, form } = this;
 
@@ -52,7 +109,7 @@ export default {
         pg: "html5_inicis",
         pay_method: "card",
         merchant_uid: merchantUid,
-        name: "Drop the bid",
+        name: this.auctionData.itemName || "Unknown Item",
         amount: totalprice,
         buyer_email: "redjoun@gmail.com",
         buyer_name: form.name,
@@ -68,23 +125,20 @@ export default {
           localStorage.setItem('formData', JSON.stringify(form));
 
           // Send payment completion request to server
-          fetch(`/payment`, {
-            method: 'POST',
+          axiosInstance.post('/payment/save', {
+            auctionId: this.$route.params.id,
+            biddingSuccessId: 1,
+            name: form.name,
+            phoneNumber: form.phone,
+            address: form.address,
+            message: form.message,
+          }, {
             headers: {
               'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-              auctionId: 1,
-              biddingSuccessId: 1,
-              name: form.name,
-              phoneNumber: form.phone,
-              address: form.address,
-              message: form.message,
-              // createdAt: new Date().toISOString()
-            })
+            }
           })
           .then(response => {
-            if (response.ok) {
+            if (response.status === 200) {
               // Redirect to the status page
               window.location.href = '/auctions/paymentstatus';
             } else {
@@ -103,6 +157,9 @@ export default {
         }
       });
     }
+  },
+  mounted() {
+    this.setAuctionData(); // Fetch auction data when the component mounts
   }
 }
 </script>
