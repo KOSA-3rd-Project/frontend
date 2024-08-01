@@ -15,7 +15,7 @@ import ShippingInfoStatus from '@/components/payment/ShippingInfoStatus.vue';
 import PaymentInfo from '@/components/payment/PaymentInfo.vue';
 
 export default {
-  name: 'PaymentPage',
+  name: 'PaymentStatusPage',
   components: {
     ProductInfo,
     ShippingInfoStatus,
