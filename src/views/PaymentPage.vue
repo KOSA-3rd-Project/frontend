@@ -68,7 +68,7 @@ export default {
           localStorage.setItem('formData', JSON.stringify(form));
 
           // Send payment completion request to server
-          fetch(`http://localhost:8080/payment`, {
+          fetch(`/payment`, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json'
@@ -80,13 +80,13 @@ export default {
               phoneNumber: form.phone,
               address: form.address,
               message: form.message,
-              createdAt: new Date().toISOString()
+              // createdAt: new Date().toISOString()
             })
           })
           .then(response => {
             if (response.ok) {
               // Redirect to the status page
-              window.location.href = '/auction/paymentstatus';
+              window.location.href = '/auctions/paymentstatus';
             } else {
               alert('결제 정보 업데이트에 실패했습니다.');
             }
