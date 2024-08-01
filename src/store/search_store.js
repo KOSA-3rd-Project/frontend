@@ -1,3 +1,6 @@
+// search_store.js
+// 작성자: 이주윤
+
 import axios from 'axios';
 
 const initialState = {

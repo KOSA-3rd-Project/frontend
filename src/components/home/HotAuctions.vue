@@ -1,3 +1,6 @@
+<!-- 입찰이 많은 경매 리스트를 보여주는 컴포넌트 -->
+<!-- 작성자: 이주윤 -->
+
 <template>
     <div class="carousel-container">
         <v-divider class="mt-1 mb-2 mx-auto" style="width: 1000px"></v-divider>
@@ -7,7 +10,7 @@
                 <v-container>
                     <v-row>
                         <v-col v-for="item in group" :key="item.auctionId" cols="12" sm="6" md="3">
-                            <v-card height="400px" class="d-flex flex-column" @click="navigateToAuction(item.auctionId)" :class="{ 'clickable-card': true }">
+                            <v-card height="400px" class="d-flex flex-column clickable-card" @click="navigateToAuction(item.auctionId)">
                                 <v-img :src="getImageUrl(item.url)" height="200" contain></v-img>
                                 <v-card-title class="title-container pa-2">
                                     <div class="title-content" :style="{ fontSize: calculateFontSize(item.itemName) }">
@@ -59,8 +62,9 @@ export default {
         auctionGroups() {
             const groups = [];
             for (let i = 0; i < this.hotAuctions.length; i += 4) {
-                groups.push(this.hotAuctions.slice(i, i + 4));
+                groups.push(this.hotAuctions.slice(i, i + 4)); // 2차원 배열
             }
+            console.log(groups);
             return groups;
         },
     },

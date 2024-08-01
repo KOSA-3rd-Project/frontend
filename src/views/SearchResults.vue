@@ -1,4 +1,5 @@
-<!-- SearchResults.vue -->
+<!-- 검색 결과를 보여주는 페이지 -->
+<!-- 작성자: 이주윤 -->
 
 <template>
     <v-container fluid>
