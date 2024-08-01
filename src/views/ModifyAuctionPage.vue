@@ -12,8 +12,7 @@
 <script>
 import AuctionFormCompo from '@/components/auction/AuctionFormCompo.vue';
 import BaseTitle from '@/components/member/atoms/BaseTitle.vue';
-// import axios from 'axios';
-import axiosInstance from '../utils/axiosinstance';
+import axios from 'axios';
 
 export default {
     components: {
@@ -41,7 +40,7 @@ export default {
     methods: {
         async setAuctionData() {
             try {
-                const res = await axiosInstance.get(`/auctions/${this.$route.params.id}`, {
+                const res = await axios.get(`/auctions/all/${this.$route.params.id}`, {
                     headers: {
                         'Content-Type': 'application/json',
                         withCredentials: true,

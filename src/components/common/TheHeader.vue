@@ -1,6 +1,6 @@
 <!-- 헤더 -->
 <!-- 작성자: 이주윤 -->
-<!-- TODO: 로그인 상태에 따른 아이콘 변경 -->
+
 <template>
     <v-app-bar class="pl-10 pr-10" flat fixed>
         <router-link to="/">
@@ -35,10 +35,6 @@
             style="max-width: 300px"
         >
         </v-text-field>
-
-        <v-btn icon class="ml-4" v-if="isLogIn">
-            <v-icon>mdi-chat-outline</v-icon>
-        </v-btn>
 
         <v-btn icon class="ml-4" to="/my-page" v-if="isLogIn">
             <v-icon>mdi-account-circle-outline</v-icon>

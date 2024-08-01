@@ -6,17 +6,14 @@
         <td class="imgcell" rowspan="5">
           <img class="productimg" :src="imageSrc" alt="Product Image">
         </td>
-        <td>품목명</td>
+        <td>{{ itemName }}</td>
         <td class="alignright">{{ price }}원</td>
       </tr>
       <tr>
-        <td colspan="2">카테고리</td>
+        <td colspan="2">{{ categoryName }}</td>
       </tr>
       <tr>
-        <td colspan="2">&nbsp;</td>
-      </tr>
-      <tr>
-        <td colspan="2">경매진행일자</td>
+        <td colspan="2">경매종료일자: {{ dueDate }}</td> 
       </tr>
     </table>
   </div>
@@ -26,14 +23,26 @@
 export default {
   name: 'ProductInfo',
   props: {
+    imageSrc: {
+      type: String,
+      required: true
+    },
+    itemName: {
+      type: String,
+      required: true
+    },
     price: {
       type: Number,
       required: true
     },
-    imageSrc: {
+    categoryName: {
       type: String,
       required: true
-    }
+    },
+    dueDate: {  
+      type: String,
+      required: true
+    },
   }
 }
 </script>
@@ -59,5 +68,4 @@ tr, td {
   width: 200px;
   height: 200px;
 }
-
 </style>

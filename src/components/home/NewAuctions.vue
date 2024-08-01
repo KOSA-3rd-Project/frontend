@@ -1,3 +1,6 @@
+<!-- 최근 등록된 경매 리스트를 보여주는 컴포넌트 -->
+<!-- 작성자: 이주윤 -->
+
 <template>
     <div class="carousel-container">
         <v-divider class="mt-6 mb-2 mx-auto" style="width: 1000px"></v-divider>

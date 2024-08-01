@@ -23,7 +23,6 @@
         <auction-input-compo label="판매 기간">
             <auction-text-field-compo v-model="auctionForm.startDate" type="datetime-local" :min="currentDateTime" @change="validateStartDate" />
             <auction-text-field-compo v-model="auctionForm.dueDate" type="datetime-local" :min="startDateTime" @change="validateDueDate" />
-            <!-- <input type="datetime-local" v-model="auctionForm.dueDate" :min="startDateTime" @change="validateDueDate" required> -->
         </auction-input-compo>
 
         <auction-input-compo label="설명">
@@ -49,7 +48,7 @@
 </template>
 
 <script>
-import axios from 'axios';
+import axiosInstance from '@/utils/axiosinstance';
 import _ from 'lodash';
 import BaseButton from '@/components/member/atoms/BaseButton.vue';
 import AuctionInputCompo from './atoms/AuctionInputCompo.vue';
@@ -69,20 +68,21 @@ const registerAuction = async (auctionForm, images, mainImageIndex) => {
     console.log(formData.get('mainImageIndex'));
     console.log(typeof formData.get('mainImageIndex'));
     try {
-        const res = await axios.post('/auctions', formData, {
+        const res = await axiosInstance.post('/auctions', formData, {
             headers: {
                 'Content-Type': 'multipart/form-data',
             },
             withCredentials: true,
         });
         if (res.status === 201) {
+            auctionForm.auctionId = res.data;
             return true;
         } else {
             console.log(res.statusText);
             return false;
         }
     } catch (error) {
-        console.error('Error:', error);
+        console.error('Axios Error:', error);
         return false;
     }
 };
@@ -121,7 +121,7 @@ const updateAuction = async (auctionForm, images, mainImageIndex, deletedImages,
         formData.append('mainImageIndex', mainImageIndex);
     }
     try {
-        const res = await axios.put(`/auctions/${auctionForm.auctionId}`, formData, {
+        const res = await axiosInstance.put(`/auctions/${auctionForm.auctionId}`, formData, {
             withCredentials: true,
         });
         if (res.status === 200) {
@@ -131,7 +131,7 @@ const updateAuction = async (auctionForm, images, mainImageIndex, deletedImages,
             return false;
         }
     } catch (error) {
-        console.error('Error:', error);
+        console.error('Axios Error:', error);
         return false;
     }
 };
@@ -146,7 +146,7 @@ export default {
                 categoryId: null,
                 auctionProductStatusId: null,
                 location: '',
-                startPrice: 0,
+                startPrice: null,
                 startDate: '',
                 dueDate: '',
                 description: '',
@@ -227,6 +227,7 @@ export default {
                     this.isSubmitting = false;
                     if (result) {
                         alert('상품 등록이 완료되었습니다.');
+                        this.$router.push({ name: 'HomePage' });
                     } else {
                         alert('서버 오류입니다. 관리자에게 문의해주세요.');
                     }
@@ -237,6 +238,7 @@ export default {
                     this.isSubmitting = false;
                     if (result) {
                         alert('상품 수정이 완료되었습니다.');
+                        this.$router.push({ name: 'MyPage' });
                     } else {
                         alert('서버 오류입니다. 관리자에게 문의해주세요.');
                     }
