@@ -65,6 +65,7 @@ export default {
                 { text: '가전', value: '가전' },
                 { text: '스포츠', value: '스포츠' },
                 { text: '수집품', value: '수집품' },
+                { text: '기타', value: '기타' },
             ],
         };
     },
