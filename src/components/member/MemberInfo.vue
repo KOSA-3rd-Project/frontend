@@ -142,6 +142,9 @@ export default {
                     logout()
                         .then(() => {
                             this.$store.dispatch('member/logout');
+                            if (this.$router.currentRoute.path !== '/') {
+                                this.$router.push('/');
+                            }
                         })
                         .catch((error) => {
                             console.log(error);
@@ -154,8 +157,16 @@ export default {
         handleUpdateWithdrawal: function () {
             updateMemberWithdrawal()
                 .then(() => {
-                    alert('탈퇴 되었습니다.');
-                    this.to = '/';
+                    logout()
+                        .then(() => {
+                            this.$store.dispatch('member/logout');
+                            if (this.$router.currentRoute.path !== '/') {
+                                this.$router.push('/');
+                            }
+                        })
+                        .catch((error) => {
+                            console.log(error);
+                        });
                 })
                 .catch((error) => {
                     console.log(error);

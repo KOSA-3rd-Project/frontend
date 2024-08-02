@@ -34,6 +34,17 @@ export default {
             page: 'MemberInfo',
         };
     },
+    created() {
+        const savedPage = localStorage.getItem('selectedPage');
+        if (savedPage) {
+            this.page = savedPage;
+        }
+    },
+    watch: {
+        page(newPage) {
+            localStorage.setItem('selectedPage', newPage);
+        },
+    },
 };
 </script>
 

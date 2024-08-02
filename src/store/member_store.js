@@ -14,6 +14,7 @@ const store = {
         logout(state) {
             state.access_token = '';
             localStorage.removeItem('accessToken');
+            localStorage.removeItem('selectedPage');
         },
     },
 
