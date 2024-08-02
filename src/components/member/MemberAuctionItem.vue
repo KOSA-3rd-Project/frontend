@@ -47,7 +47,7 @@
                 </v-card>
             </v-col>
         </v-row>
-        <v-pagination v-model="currentPage" :length="totalPages" :total-visible="5" @input="changePage" class="mt-4"></v-pagination>
+        <v-pagination v-if="auctionItems && auctionItems.length" v-model="currentPage" :length="totalPages" :total-visible="5" @input="changePage" class="mt-4"></v-pagination>
 
         <v-dialog v-model="cancelModal" max-width="500px">
             <v-card>
