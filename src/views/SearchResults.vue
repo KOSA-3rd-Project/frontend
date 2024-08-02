@@ -35,12 +35,8 @@
                                 <v-expansion-panel-header>가격</v-expansion-panel-header>
                                 <v-expansion-panel-content>
                                     <v-row>
-                                        <v-col cols="6">
-                                            <v-text-field v-model="minPrice" label="최소 가격" type="number" prefix="₩" hide-details dense outlined></v-text-field>
-                                        </v-col>
-                                        <v-col cols="6">
-                                            <v-text-field v-model="maxPrice" label="최대 가격" type="number" prefix="₩" hide-details dense outlined></v-text-field>
-                                        </v-col>
+                                        <v-text-field class="mb-2" v-model="minPrice" label="최소 가격" type="number" prefix="₩" hide-details dense outlined></v-text-field>
+                                        <v-text-field v-model="maxPrice" label="최대 가격" type="number" prefix="₩" hide-details dense outlined></v-text-field>
                                     </v-row>
                                 </v-expansion-panel-content>
                             </v-expansion-panel>
