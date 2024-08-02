@@ -69,43 +69,55 @@
       </tr>
       <tr v-if="auctionData.auctionStatusId===2">
         <td class="aligncenter" colspan="2">
-            <v-dialog v-model="dialog"  max-width="500">
-              <template v-slot:activator="{ on }">
-                <base-button buttonName="입찰하기" type="submit" backgroundColor="#000" color="#fff" borderColor="#000" v-on="on" @click="dialog = true"></base-button>
-              </template>
-              <v-card>
-                <v-card-title class="headline">입찰 신청</v-card-title>
-                <!-- <v-divider inset></v-divider> -->
-                <v-card-text>
-                  <v-layout row wrap>
-                        <v-flex xs12 sm6>
-                          <p class="text-lg-h6 font-weight-bold">현재 입찰가</p>
-                        </v-flex>
-                        <v-flex xs12 sm6>
-                          <p v-if="biddingData.length===0" class="text-lg-h6 font-weight-bold">
-                            {{auctionData.startPrice}}원</p>
-                          <p v-else class="text-lg-h6 font-weight-bold">
-                            {{ biddingData[0].price }}원
-                          </p>
-                        </v-flex>
-                        <v-flex xs12 sm6>
-                          <p class="text-lg-h6 font-weight-bold">입찰가</p>
-                        </v-flex>
-                        <v-flex xs12 sm6>
-                          <v-text-field
-                            single-line
-                            outline v-model="newBidingPrice"
-                            :error-messages="errorMessages"
-                            @input="validateBidPrice"></v-text-field>
-                        </v-flex> 
-                  </v-layout>
-                </v-card-text>
-                <v-card-actions>
-                  <v-spacer></v-spacer>
-                  <v-btn color="dark" @click="submitBid()">입찰 하기</v-btn>
-                </v-card-actions>
-              </v-card>
-            </v-dialog>
+          <v-dialog v-model="dialog" max-width="500px">
+            <template v-slot:activator="{ on }">
+              <base-button buttonName="입찰하기" type="submit" backgroundColor="#000" color="#fff" borderColor="#000" v-on="on" @click="dialog = true"></base-button>
+            </template>
+            <v-card>
+              <v-card-title class="headline">
+                <span class="headline">입찰신청</span>
+                <v-spacer></v-spacer>
+                <v-btn icon @click="dialog = false">
+                  <v-icon>mdi-close</v-icon>
+                </v-btn>
+              </v-card-title>
+              <v-divider></v-divider>
+              <v-spacer></v-spacer>
+              <v-card-text class="py-3">
+                <v-form>
+                  <v-row class="my-1">
+                    <v-col cols="5">
+                      <div class="subtitle-1">현재 입찰가</div>
+                    </v-col>
+                    <v-col cols="7">
+                      <div v-if="biddingData.length === 0" class="text-right"><h3>{{ auctionData.startPrice }}원</h3></div>
+                      <div v-else class="text-right"><h3>{{ biddingData[0].price }}원</h3></div>
+                    </v-col>
+                  </v-row>
+                  <v-row class="my-1">
+                    <v-col cols="5">
+                      <div class="subtitle-1">입찰가</div>
+                    </v-col>
+                    <v-col cols="7">
+                      <v-text-field
+                        outlined
+                        v-model="newBidingPrice"
+                        :error-messages="errorMessages"
+                        dense
+                        @input="validateBidPrice"
+                      ></v-text-field>
+                    </v-col>
+                  </v-row>
+                </v-form>
+              </v-card-text>
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                <div class="d-flex justify-center" style="width: 100%;">
+                  <base-button buttonName="입찰하기" type="submit" backgroundColor="#000" color="#fff" borderColor="#000" width="300px" v-on="on" @click="submitBid()"></base-button>
+                </div>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
         </td>
       </tr>
       <tr v-else>
@@ -222,15 +234,6 @@ export default {
           this.images = res.data.images;
           this.mainImageIndex = res.data.mainImageIndex;
 
-          this.auctionData.startDate = this.formatToDatetimeLocal(this.auctionData.startDate);
-          this.auctionData.dueDate = this.formatToDatetimeLocal(this.auctionData.dueDate);
-
-          // this.auctionData.startDate = moment(this.auctionData.startDate).format();
-          // this.auctionData.dueDate = moment(this.auctionData.dueDate).format();
-
-          // this.auctionData.startDate = moment.utc(this.auctionData.startDate).local().format();
-          // this.auctionData.dueDate = moment.utc(this.auctionData.dueDate).local().format();
-
           console.log(this.auctionData);
           this.isAuctionDataLoaded = true; // 데이터 로드 완료
         } else {
@@ -329,18 +332,6 @@ export default {
     formatBidTime(time) {
       return moment(time).format('YYYY년 MM월 DD일 HH시 mm분');
     },
-    formatToDatetimeLocal(dateString) {
-        const date = new Date(dateString);
-        const offset = date.getTimezoneOffset(); // 분 단위로 시간대 오프셋을 가져옵니다.
-        const localDate = new Date(date.getTime() + offset * 60000); // 오프셋을 고려하여 로컬 시간으로 변환합니다.
-        // 'yyyy-MM-ddThh:mm' 형식으로 변환
-        const year = localDate.getFullYear();
-        const month = String(localDate.getMonth() + 1).padStart(2, '0');
-        const day = String(localDate.getDate()).padStart(2, '0');
-        const hours = String(localDate.getHours()).padStart(2, '0');
-        const minutes = String(localDate.getMinutes()).padStart(2, '0');
-        return `${year}-${month}-${day}T${hours}:${minutes}`;
-    }
   },
   mounted() {
     this.setAuctionData();

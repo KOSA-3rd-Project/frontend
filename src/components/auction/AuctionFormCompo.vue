@@ -65,8 +65,9 @@ const registerAuction = async (auctionForm, images, mainImageIndex) => {
         formData.append('images', image);
     });
     formData.append('mainImageIndex', mainImageIndex);
-    console.log(formData.get('mainImageIndex'));
-    console.log(typeof formData.get('mainImageIndex'));
+    // console.log(formData.get('mainImageIndex'));
+    // console.log(typeof formData.get('mainImageIndex'));
+
     try {
         const res = await axiosInstance.post('/auctions', formData, {
             headers: {
@@ -220,8 +221,12 @@ export default {
                 return;
             }
             this.isSubmitting = true;
+
             this.auctionForm.startDate = this.convertToUTC(this.auctionForm.startDate);
             this.auctionForm.dueDate = this.convertToUTC(this.auctionForm.dueDate);
+            console.log(this.auctionForm.startDate);
+            console.log(this.auctionForm.dueDate);
+
             if (!this.isEditMode) {
                 registerAuction(this.auctionForm, this.images, this.mainImageIndex).then((result) => {
                     this.isSubmitting = false;
@@ -248,13 +253,7 @@ export default {
         convertToUTC(date) {
             if (!date) return '';
             const localDate = new Date(date);
-            const utcDate = new Date(localDate.getTime() - localDate.getTimezoneOffset() * 60000);
-            return utcDate.toISOString().slice(0, 16);
-        },
-        convertToCorrecCurrentDate() {
-            const offset = new Date().getTimezoneOffset() * 60000; // UTC(협정세계시)와 시스템이 속해 있는 지역의 시간의 차이인 시간대를 리턴
-            const correctDate = new Date(Date.now() - offset);
-            return correctDate.toISOString().slice(0, 16);
+            return localDate.toISOString().slice(0, 16);
         },
         validateStartDate() {
             const startDate = new Date(this.auctionForm.startDate);
@@ -294,14 +293,11 @@ export default {
         },
         formatToDatetimeLocal(dateString) {
             const date = new Date(dateString);
-            const offset = date.getTimezoneOffset(); // 분 단위로 시간대 오프셋을 가져옵니다.
-            const localDate = new Date(date.getTime() + offset * 60000); // 오프셋을 고려하여 로컬 시간으로 변환합니다.
-            // 'yyyy-MM-ddThh:mm' 형식으로 변환
-            const year = localDate.getFullYear();
-            const month = String(localDate.getMonth() + 1).padStart(2, '0');
-            const day = String(localDate.getDate()).padStart(2, '0');
-            const hours = String(localDate.getHours()).padStart(2, '0');
-            const minutes = String(localDate.getMinutes()).padStart(2, '0');
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            const hours = String(date.getHours()).padStart(2, '0');
+            const minutes = String(date.getMinutes()).padStart(2, '0');
             return `${year}-${month}-${day}T${hours}:${minutes}`;
         },
     },
